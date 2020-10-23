@@ -406,6 +406,8 @@
       </div>
     </div>
 
+    <li><button class="btn btn-default fully" id="exportImportModalButton" onclick="$('#exportImportModal').modal();showCurrentPlanPrettifiedJson();">EXPORT/IMPORT</button></li>
+
     <li><button class="btn btn-default halfy " id="report_mode" title="Show report"><i class="fa fa-calculator" aria-hidden="true"></i>
     <button class="btn btn-default halfy pull-right" onclick="fullscreen();this.style.display='none';$('#nofull_mode').show();" id="full_mode" title="Full screen"><i class="fa fa-expand" aria-hidden="true"></i></button>
     <button class="btn btn-default halfy pull-right" style="display:none" onclick="outFullscreen();this.style.display='none';$('#full_mode').show();" id="nofull_mode" data-toggle="tooltip" data-placement="right" title="Full screen"><i class="fa fa-compress" aria-hidden="true"></i></button>
@@ -414,6 +416,25 @@
       <div style="clear:both"></div>
     </ul>
   </div>
+
+  <div class="modal fade" id="exportImportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Export/Import</h4>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" id="saveCurrentPlan"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+          <button type="button" class="btn btn-primary" onclick="importPlanJson();">Sauvegarder</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    
 
   <div class="modal fade col-xs-9 col-md-12" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -433,6 +454,7 @@
             <div class="col-md-3 col-xs-3 boxMouseOver" style="min-height:140px;margin:15px;background:url('newPlanEmpty.jpg')"><img src="newPlanEmpty.jpg" class="img-responsive" onclick="initHistory();$('#myModal').modal('toggle')"/></div>
             <div class="col-md-3 col-xs-3 boxMouseOver"  style="min-height:140px;margin:15px;background:url('newPlanEmpty.jpg')"><img src="newPlanSquare.jpg"  class="img-responsive" style="margin-top:10px" onclick="initHistory('newSquare');$('#myModal').modal('toggle')"/></div>
             <div class="col-md-3 col-xs-3 boxMouseOver"  style="min-height:140px;margin:15px;background:url('newPlanEmpty.jpg')"><img src="newPlanL.jpg"  class="img-responsive" style="margin-top:20px" onclick="initHistory('newL');$('#myModal').modal('toggle')"/></div>
+            <div class="col-md-3 col-xs-3 boxMouseOver"  style="min-height:140px;margin:15px;background:url('biseau.jpg')"><img src="biseau.jpg"  class="img-responsive" style="margin-top:20px" onclick="initHistory('biseau');$('#myModal').modal('toggle')"/></div>
           </div>
         </div>
         <!-- <div class="modal-footer">
@@ -512,6 +534,7 @@
   <script src="bootstrap.min.js"></script>
   <script src="mousewheel.js"></script>
   <script src="func.js"></script>
+  <script src="funcJsonObj.js"></script>
   <script src="qSVG.js"></script>
   <script src="editor.js"></script>
   <script src="engine.js"></script>
