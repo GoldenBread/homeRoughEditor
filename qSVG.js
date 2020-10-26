@@ -10,8 +10,8 @@ var qSVG = {
     create: function(id, shape, attrs) {
         var shape = $(document.createElementNS("http://www.w3.org/2000/svg", shape));
         for (var k in attrs) {
-            shape.attr(k, attrs[k]);
-            }
+          shape.attr(k, attrs[k]);
+        }
         if (id != 'none') {
           $("#" + id).append(shape);
           }

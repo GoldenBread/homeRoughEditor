@@ -67,7 +67,7 @@ function initHistory(boot = false) {
     }
     if (boot == "biseau") {
       if (localStorage.getItem('history')) localStorage.removeItem('history');
-      HISTORY.push({"objData":[],"wallData":[{"thick":20,"start":{"x":447,"y":458},"end":{"x":447,"y":744},"type":"normal","parent":5,"child":1,"angle":1.5707963267948966,"equations":{"up":{"A":"v","B":457},"down":{"A":"v","B":437},"base":{"A":"v","B":447}},"coords":[{"x":457,"y":468},{"x":437,"y":448},{"x":437,"y":754},{"x":457,"y":734}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":447,"y":744},"end":{"x":1347,"y":744},"type":"normal","parent":0,"child":2,"angle":0,"equations":{"up":{"A":"h","B":734},"down":{"A":"h","B":754},"base":{"A":"h","B":744}},"coords":[{"x":457,"y":734},{"x":437,"y":754},{"x":1357,"y":754},{"x":1337,"y":734}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1347,"y":744},"end":{"x":1347,"y":144},"type":"normal","parent":1,"child":3,"angle":-1.5707963267948966,"equations":{"up":{"A":"v","B":1337},"down":{"A":"v","B":1357},"base":{"A":"v","B":1347}},"coords":[{"x":1337,"y":734},{"x":1357,"y":754},{"x":1357,"y":134},{"x":1337,"y":154}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1347,"y":144},"end":{"x":1020,"y":144},"type":"normal","parent":2,"child":4,"angle":3.141592653589793,"equations":{"up":{"A":"h","B":154},"down":{"A":"h","B":134},"base":{"A":"h","B":144}},"coords":[{"x":1337,"y":154},{"x":1357,"y":134},{"x":1010,"y":134},{"x":1030,"y":154}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1020,"y":144},"end":{"x":1020,"y":458},"type":"normal","parent":3,"child":5,"angle":1.5707963267948966,"equations":{"up":{"A":"v","B":1030},"down":{"A":"v","B":1010},"base":{"A":"v","B":1020}},"coords":[{"x":1030,"y":154},{"x":1010,"y":134},{"x":1010,"y":448},{"x":1030,"y":468}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1020,"y":458},"end":{"x":447,"y":458},"type":"normal","parent":4,"child":0,"angle":3.141592653589793,"equations":{"up":{"A":"h","B":468},"down":{"A":"h","B":448},"base":{"A":"h","B":458}},"coords":[{"x":1030,"y":468},{"x":1010,"y":448},{"x":437,"y":448},{"x":457,"y":468}],"graph":{"0":{},"context":{},"length":1}}],"roomData":[{"coords":[{"x":447,"y":744},{"x":1347,"y":744},{"x":1347,"y":144},{"x":1020,"y":144},{"x":1020,"y":458},{"x":447,"y":458},{"x":447,"y":744}],"coordsOutside":[{"x":1357,"y":754},{"x":1357,"y":134},{"x":1010,"y":134},{"x":1010,"y":448},{"x":437,"y":448},{"x":437,"y":754},{"x":1357,"y":754}],"coordsInside":[{"x":1337,"y":734},{"x":1337,"y":154},{"x":1030,"y":154},{"x":1030,"y":468},{"x":457,"y":468},{"x":457,"y":734},{"x":1337,"y":734}],"inside":[],"way":["0","2","3","4","5","1","0"],"area":330478,"surface":"","name":"","color":"gradientWhite","showSurface":true,"action":"add"}]});
+      HISTORY.push({"objData":[],"wallData":[{"thick":20,"start":{"x":665,"y":394.8101265822785},"end":{"x":665,"y":744},"type":"normal","parent":4,"child":1,"angle":1.5707963267948966,"equations":{"up":{"A":"v","B":675},"down":{"A":"v","B":655},"base":{"A":"v","B":665}},"coords":[{"x":675,"y":399.9890417503297},{"x":655,"y":389.6312114142272},{"x":655,"y":754},{"x":675,"y":734}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":665,"y":744},"end":{"x":1347,"y":744},"type":"normal","parent":0,"child":2,"angle":0,"equations":{"up":{"A":"h","B":734},"down":{"A":"h","B":754},"base":{"A":"h","B":744}},"coords":[{"x":675,"y":734},{"x":655,"y":754},{"x":1357,"y":754},{"x":1337,"y":734}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1347,"y":744},"end":{"x":1347,"y":144},"type":"normal","parent":1,"child":3,"angle":-1.5707963267948966,"equations":{"up":{"A":"v","B":1337},"down":{"A":"v","B":1357},"base":{"A":"v","B":1347}},"coords":[{"x":1337,"y":734},{"x":1357,"y":754},{"x":1357,"y":134},{"x":1337,"y":154}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1347,"y":144},"end":{"x":1020,"y":144},"type":"normal","parent":2,"child":5,"angle":3.141592653589793,"equations":{"up":{"A":"h","B":154},"down":{"A":"h","B":134},"base":{"A":"h","B":144}},"coords":[{"x":1337,"y":154},{"x":1357,"y":134},{"x":1020,"y":134},{"x":1020,"y":154}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1020,"y":144},"end":{"x":665,"y":394.8101265822785},"type":"normal","parent":5,"child":0,"angle":2.526512646076462,"equations":{"up":{"A":-0.7065073988233198,"B":876.8815359560706},"down":{"A":-0.7065073988233198,"B":852.3935576435017},"base":{"A":-0.7065073988233197,"B":864.6375467997862}},"coords":[{"x":1020,"y":156.24398915628444},{"x":1020,"y":131.75601084371556},{"x":655,"y":389.6312114142272},{"x":675,"y":399.9890417503297}],"graph":{"0":{},"context":{},"length":1}},{"thick":20,"start":{"x":1020,"y":144},"end":{"x":1020,"y":144},"type":"new","parent":3,"child":4,"angle":0,"equations":{"up":{"A":"v","B":1020},"down":{"A":"v","B":1020},"base":{"A":"v","B":1020}},"coords":[{"x":1020,"y":154},{"x":1020,"y":134},{"x":1020,"y":131.75601084371556},{"x":1020,"y":156.24398915628444}],"backUp":false,"graph":{"0":{},"context":{},"length":1}}],"roomData":[{"coords":[{"x":665,"y":744},{"x":1347,"y":744},{"x":1347,"y":144},{"x":1020,"y":144},{"x":665,"y":395},{"x":665,"y":744}],"coordsOutside":[{"x":1357,"y":754},{"x":1357,"y":134},{"x":1020,"y":134},{"x":1016.8218643745714,"y":134},{"x":659.2268485682519,"y":386.8347858236232},{"x":655,"y":389.82334636061245},{"x":655,"y":754},{"x":1357,"y":754}],"coordsInside":[{"x":1337,"y":734},{"x":1337,"y":154},{"x":1020,"y":154},{"x":1023.1781356254285,"y":154},{"x":670.7731514317481,"y":403.1652141763768},{"x":675,"y":400.1766536393875},{"x":675,"y":734},{"x":1337,"y":734}],"inside":[],"way":["0","2","3","4","1","0"],"area":341103.34,"surface":"","name":"","color":"gradientWhite","showSurface":true,"action":"add"}]});
       HISTORY[0] = JSON.stringify(HISTORY[0]);
       localStorage.setItem('history', JSON.stringify(HISTORY));
       load(0);
@@ -138,8 +138,12 @@ function load(index = HISTORY.index, boot = false) {
   historyTemp = JSON.parse(localStorage.getItem('history'));
   historyTemp = JSON.parse(historyTemp[index]);
 
-  for (var k in historyTemp.objData) {
-    var OO = historyTemp.objData[k];
+  loadObj(historyTemp);
+}
+
+function loadObj(stateObj) {
+  for (var k in stateObj.objData) {
+    var OO = stateObj.objData[k];
     // if (OO.family == 'energy') OO.family = 'byObject';
     var obj = new editor.obj2D(OO.family, OO.class, OO.type, {x: OO.x, y: OO.y}, OO.angle, OO.angleSign, OO.size, OO.hinge = 'normal', OO.thick, OO.value);
     obj.limit = OO.limit;
@@ -147,12 +151,12 @@ function load(index = HISTORY.index, boot = false) {
     $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
     obj.update();
   }
-  WALLS = historyTemp.wallData;
+  WALLS = stateObj.wallData;
   for (var k in WALLS) {
     if (WALLS[k].child != null) WALLS[k].child = WALLS[WALLS[k].child];
     if (WALLS[k].parent != null) WALLS[k].parent = WALLS[WALLS[k].parent];
   }
-  ROOM = historyTemp.roomData;
+  ROOM = stateObj.roomData;
   editor.architect(WALLS);
   editor.showScaleBox();
   rib();
@@ -813,8 +817,7 @@ function calcul_snap(event, state) {
     eX = touches[0].pageX;
     eY = touches[0].pageY;
     tactile = true;
-  }
-  else {
+  } else {
     eX = event.pageX;
     eY = event.pageY;
   }
