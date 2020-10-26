@@ -32,7 +32,11 @@ var editor = {
 
   wallsComputing: function(WALLS, action = false) {
     // IF ACTION == MOVE -> equation2 exist !!!!!
-    $('#boxwall').empty();
+    if (action != 'move') {
+      $('#boxwall').empty();
+    } else {
+      $('#boxwall').children().addClass('wall-to-remove');
+    }
     $('#boxArea').empty();
 
     for (var vertice = 0; vertice < WALLS.length; vertice++) {

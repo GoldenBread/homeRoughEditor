@@ -36,6 +36,7 @@ var originX_viewbox = 0;
 var originY_viewbox = 0;
 var zoom = 9;
 var factor = 1;
+var scaling = false;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
@@ -757,6 +758,7 @@ function limitObj(equation, size, coords,message = false) {
 }
 
 function zoom_maker(lens, xmove, xview) {
+  console.log("zoomMM " + lens + "|" + xmove + "|" + xview);
 
     if (lens == 'zoomout' && zoom > 1 && zoom < 17) {
         zoom--;

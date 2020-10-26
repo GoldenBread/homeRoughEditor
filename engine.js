@@ -5,6 +5,8 @@ document.querySelector('#lin').addEventListener("touchmove", throttle(function(e
 document.querySelector('#lin').addEventListener("mousedown", _MOUSEDOWN, true);
 document.querySelector('#lin').addEventListener("touchstart", _MOUSEDOWN, true);
 
+var scaling = false;
+
 $(document).on('click', '#lin', function(event) {
   event.preventDefault();
 });
@@ -73,6 +75,11 @@ document.addEventListener("keydown", function(event) {
 
 function _MOUSEMOVE(event) {
   //console.log(mode + " " + new Date());
+  if (scaling) {
+    pinchMove(event);
+    return;
+  }
+  
   event.preventDefault();
   $('.sub').hide(100);
   
@@ -1131,6 +1138,9 @@ function _MOUSEMOVE(event) {
     if (event.touches) {
       selectOnHover(event);
     }
+    if (event.touches.length == 2) {
+      pinchStart(event);
+    }
     event.preventDefault();
     // *******************************************************************
     // **************************   DISTANCE MODE   **********************
@@ -1389,6 +1399,32 @@ function _MOUSEMOVE(event) {
     }
   }
   
+  function pinchStart(event) {
+    scaling = true;
+    dist = Math.hypot(
+      event.touches[0].pageX - event.touches[1].pageX,
+      event.touches[0].pageY - event.touches[1].pageY);
+
+  }
+  
+  function pinchMove(event) {
+    if (scaling) {
+      var newDist = Math.hypot(
+      event.touches[0].pageX - event.touches[1].pageX,
+      event.touches[0].pageY - event.touches[1].pageY);
+      if (newDist > dist) {
+        zoom_maker('zoomin', 50);
+      } else {
+        zoom_maker('zoomout', 50);
+      }
+      console.log("pinch " + dist);
+    }
+  }
+  
+  function pinchEnd(event) {
+    scaling = false;
+  }
+
   //******************************************************************************************************
   //*******************  *****  ******        ************************************************************
   //*******************  *****  ******  ****  ************************************************************
@@ -1398,6 +1434,10 @@ function _MOUSEMOVE(event) {
   //**********************************  ******************************************************************
   
   function _MOUSEUP(event) {
+    $(".wall-to-remove").remove();
+    
+    pinchEnd(event);
+    
     if (showRib) $('#boxScale').show(200);
     drag = 'off';
     cursor('default');
