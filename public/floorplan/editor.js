@@ -1,3 +1,5 @@
+import './func';
+
 var editor = {
 
   wall: function(start, end, type, thick) {
