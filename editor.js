@@ -371,13 +371,13 @@ var editor = {
       if (qSVG.rayCasting(snap, polygon)) {
         wallList.push(WALLS[i]); // Return EDGES Index
       }
-      }
-      if (wallList.length == 0) return false;
-      else {
-        if (wallList.length == 1) return wallList[0];
-        else return wallList;
-      }
-    },
+    }
+    if (wallList.length == 0) return false;
+    else {
+      if (wallList.length == 1) return wallList[0];
+      else return wallList;
+    }
+  },
 
   stickOnWall: function(snap) {
     if (WALLS.length == 0) return false;
@@ -446,7 +446,7 @@ var editor = {
       for (var pp = 0; pp < 4; pp++) {
         polygon.push({x: WALLS[i].coords[pp].x, y: WALLS[i].coords[pp].y}); // FOR Z
       }
-      if (qSVG.rayCasting(snap, polygon)) {
+      if (qSVG.rayCasting(snap, polygon, rayCastingSensibility)) {
         wallList.push(WALLS[i]); // Return EDGES Index
       }
       }

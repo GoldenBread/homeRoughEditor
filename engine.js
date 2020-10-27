@@ -1,9 +1,26 @@
 document.querySelector('#lin').addEventListener("mouseup", _MOUSEUP);
 document.querySelector('#lin').addEventListener("touchend", _MOUSEUP);
 document.querySelector('#lin').addEventListener("mousemove", throttle(function(event){ _MOUSEMOVE(event);},30));
-document.querySelector('#lin').addEventListener("touchmove", throttle(function(event){ _MOUSEMOVE(event);},30));
+if (iOS()) {
+  document.querySelector('#lin').addEventListener("touchmove", _MOUSEMOVE);
+} else {
+  document.querySelector('#lin').addEventListener("touchmove", throttle(function(event){ _MOUSEMOVE(event);},30));
+}
 document.querySelector('#lin').addEventListener("mousedown", _MOUSEDOWN, true);
 document.querySelector('#lin').addEventListener("touchstart", _MOUSEDOWN, true);
+
+function iOS() {
+  return [
+    'iPad Simulator',
+    'iPhone Simulator',
+    'iPod Simulator',
+    'iPad',
+    'iPhone',
+    'iPod'
+  ].includes(navigator.platform)
+  // iPad on iOS 13 detection
+  || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
 
 var scaling = false;
 
@@ -1642,7 +1659,7 @@ function _MOUSEMOVE(event) {
                   
                 } // END BINDER NODE
                 
-                if (binder.type == 'segment') {
+                if (binder.type == 'segment' && !event.touches) {
                   
                   var found = false;
                   if (binder.wall.start == binder.before) {

@@ -37,6 +37,7 @@ var originY_viewbox = 0;
 var zoom = 9;
 var factor = 1;
 var scaling = false;
+rayCastingSensibility = 20;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
