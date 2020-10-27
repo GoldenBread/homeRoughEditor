@@ -1155,7 +1155,7 @@ function _MOUSEMOVE(event) {
     if (event.touches) {
       selectOnHover(event);
     }
-    if (event.touches.length == 2) {
+    if (event.touches && event.touches.length == 2) {
       pinchStart(event);
     }
     event.preventDefault();

@@ -829,24 +829,27 @@ var qSVG = {
 
   rayCasting: function(point, polygon, margin) {//note: outer margin detection
     var x = point.x, y = point.y;
-      var inside = false;
-      for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-          var xi = polygon[i].x, yi = polygon[i].y;
-          var xj = polygon[j].x, yj = polygon[j].y;
-          if (margin) {
-            console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
-          }
-          if (margin) {
-            xi += margin;
+    var inside = false;
+    console.log("rayCasting START");
+    for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        var xi = polygon[i].x, yi = polygon[i].y;
+        var xj = polygon[j].x, yj = polygon[j].y;
+        if (margin) {
+          console.log("x " + x + " |y " + y);
+          console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
+        }
+        if (margin) {
+/*             xi += margin;
             xj -= margin;
             yi -= margin;
             yj += margin;
-            console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
-          }
+ */            //console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
+        }
 
-          var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-          if (intersect) inside = !inside;
-      }
+        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    console.log("rayCasting END");
     return inside;
   },
 
