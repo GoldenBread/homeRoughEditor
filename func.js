@@ -804,7 +804,7 @@ function limitObj(equation, size, coords,message = false) {
 function zoom_maker(lens, xmove, xview) {
   console.log("zoomMM " + lens + "|" + xmove + "|" + xview);
 
-    if (lens == 'zoomout' && zoom > 1 && zoom < 17) {
+    if (lens == 'zoomout' && zoom > 1 && zoom < 18) {
         zoom--;
         width_viewbox += xmove;
         var ratioWidthZoom =  taille_w / width_viewbox;
@@ -859,10 +859,11 @@ tactile = false;
 function calcul_snap(event, state) {
   if (event.touches) {
     var touches = event.changedTouches;
-    console.log("toto")
     eX = touches[0].pageX;
     eY = touches[0].pageY;
+    console.log("toto" + eX + ' ' + eY + ' state=' + state);
     tactile = true;
+    factor = 1;
   } else {
     eX = event.pageX;
     eY = event.pageY;
@@ -1160,6 +1161,11 @@ function inWallRib(wall, option = false) {
       }
     }
   }
+}
+
+//fit function to get the best acceptance distance in relation to zoom
+function sensibilityFormula() {
+  return -3.96 * zoom + 54.39;
 }
 
 function rib(shift = 5) {

@@ -406,7 +406,7 @@ var qSVG = {
       return {inside: inside, outside: outside};
     },
 
-    area: function(coordss) {
+   area: function(coordss) {
       if (coordss.length < 2) return false;
       var realArea = 0;
       var j = (coordss.length)-1;
@@ -832,7 +832,7 @@ var qSVG = {
       var inside = false;
 
       if (margin) {
-        polygon = inflatePolygon(polygon, margin);
+        polygon = inflatePolygon(polygon, sensibilityFormula());
       }
 
       for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {

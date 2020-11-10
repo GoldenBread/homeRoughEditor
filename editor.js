@@ -449,13 +449,14 @@ var editor = {
       if (qSVG.rayCasting(snap, polygon, rayCastingSensibility)) {
         wallList.push(WALLS[i]); // Return EDGES Index
       }
-      }
-      if (wallList.length == 0) return false;
-      else {
-        if (wallList.length == 1) return wallList[0];
-        else return wallList;
-      }
-    },
+    }
+    if (wallList.length == 0) {
+      return false;
+    } else {
+      if (wallList.length == 1) return wallList[0];
+      else return wallList;
+    }
+  },
 
   inWallRib2: function(wall, option = false) {
     if (!option) $('#boxRib').empty();

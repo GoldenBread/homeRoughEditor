@@ -1,11 +1,7 @@
 document.querySelector('#lin').addEventListener("mouseup", _MOUSEUP);
 document.querySelector('#lin').addEventListener("touchend", _MOUSEUP);
 document.querySelector('#lin').addEventListener("mousemove", throttle(function(event){ _MOUSEMOVE(event);},30));
-if (iOS()) {
-  document.querySelector('#lin').addEventListener("touchmove", _MOUSEMOVE);
-} else {
-  document.querySelector('#lin').addEventListener("touchmove", throttle(function(event){ _MOUSEMOVE(event);},30));
-}
+document.querySelector('#lin').addEventListener("touchmove", _MOUSEMOVE);
 document.querySelector('#lin').addEventListener("mousedown", _MOUSEDOWN, true);
 document.querySelector('#lin').addEventListener("touchstart", _MOUSEDOWN, true);
 
@@ -91,7 +87,7 @@ document.addEventListener("keydown", function(event) {
 // *****************************************************************************************************
 
 function _MOUSEMOVE(event) {
-  //console.log(mode + " " + new Date());
+  console.log("press coordinates = (" + event.touches[0].clientX + ";" + event.touches[0].clientY + ")");//mode + " " + new Date());
   if (scaling) {
     pinchMove(event);
     return;
@@ -634,7 +630,7 @@ function _MOUSEMOVE(event) {
     //        |____/___|_| \_|____/|_____|_| \_\
     //
     // **************************************************************************************************
-    console.log("mode=" + mode + " " + new Date());
+    // console.log("mode=" + mode + " " + new Date());
     if (mode == 'bind_mode') {
       
       snap = calcul_snap(event, grid_snap);
@@ -955,6 +951,8 @@ function _MOUSEMOVE(event) {
       // pox = event.pageX;
       // poy = event.pageY;
       zoom_maker('zoomdrag', distX, distY);
+      console.log(event);
+      // console.log('snap.xMouse=' + snap.xMouse + ' pox=' + pox + ' factor=' + factor);
     }
     console.log("yep");
   } // END MOUSEMOVE
