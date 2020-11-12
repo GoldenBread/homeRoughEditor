@@ -37,7 +37,7 @@ var originY_viewbox = 0;
 var zoom = 9;
 var factor = 1;
 var scaling = false;
-rayCastingSensibility = 20;
+rayCastingSensibility = 50;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
@@ -456,6 +456,10 @@ window.addEventListener("load", function(){
   $('#myModal').modal();
 });
 
+function openDrawer(isOpen) {
+  document.getElementById('panel').style.transform = isOpen ? "translateX(200px)" : "translateX(0px)";
+}
+
 document.getElementById('sizePolice').addEventListener("input", function() {
   document.getElementById('labelBox').style.fontSize = this.value+'px';
 });
@@ -508,6 +512,45 @@ if (!Array.prototype.includes) {
       return false;
     }
   });
+}
+
+function Vector2(x, y) 
+{
+    this.x = x;
+    this.y = y;
+}
+
+function vectorCoordinates2JTS (polygon) {
+  var coordinates = [];
+  for (var i = 0; i < polygon.length; i++) {
+    coordinates.push(new jsts.geom.Coordinate(polygon[i].x, polygon[i].y));
+  }
+  return coordinates;
+}
+
+function inflatePolygon(poly, spacing) {
+  var geoInput = vectorCoordinates2JTS(poly);
+  geoInput.push(geoInput[0]);
+
+  var geometryFactory = new jsts.geom.GeometryFactory();
+
+  var shell = geometryFactory.createPolygon(geoInput);
+  var polygon = shell.buffer(spacing);
+  //try with different cap style
+  //var polygon = shell.buffer(spacing, jsts.operation.buffer.BufferParameters.CAP_FLAT);
+
+  var inflatedCoordinates = [];
+  var oCoordinates;
+  console.log(poly);
+  console.log(polygon);
+  oCoordinates = polygon._shell._points._coordinates;
+
+  for (i = 0; i < oCoordinates.length; i++) {
+    var oItem;
+    oItem = oCoordinates[i];
+    inflatedCoordinates.push(new Vector2(Math.ceil(oItem.x), Math.ceil(oItem.y)));
+  }
+  return inflatedCoordinates;
 }
 
 function isObjectsEquals(a, b, message = false) {
@@ -761,7 +804,7 @@ function limitObj(equation, size, coords,message = false) {
 function zoom_maker(lens, xmove, xview) {
   console.log("zoomMM " + lens + "|" + xmove + "|" + xview);
 
-    if (lens == 'zoomout' && zoom > 1 && zoom < 17) {
+    if (lens == 'zoomout' && zoom > 1 && zoom < 18) {
         zoom--;
         width_viewbox += xmove;
         var ratioWidthZoom =  taille_w / width_viewbox;
@@ -816,10 +859,11 @@ tactile = false;
 function calcul_snap(event, state) {
   if (event.touches) {
     var touches = event.changedTouches;
-    console.log("toto")
     eX = touches[0].pageX;
     eY = touches[0].pageY;
+    console.log("toto" + eX + ' ' + eY + ' state=' + state);
     tactile = true;
+    factor = 1;
   } else {
     eX = event.pageX;
     eY = event.pageY;
@@ -1117,6 +1161,11 @@ function inWallRib(wall, option = false) {
       }
     }
   }
+}
+
+//fit function to get the best acceptance distance in relation to zoom
+function sensibilityFormula() {
+  return -3.96 * zoom + 54.39;
 }
 
 function rib(shift = 5) {

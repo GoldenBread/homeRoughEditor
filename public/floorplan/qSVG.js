@@ -4,7 +4,6 @@
 //----------------------- 11/08/16 -----------------------------------------------------------
 
 // 'use strict';
-var jsts = require('jsts');
 
 var qSVG = {
 
@@ -407,7 +406,7 @@ var qSVG = {
       return {inside: inside, outside: outside};
     },
 
-    area: function(coordss) {
+   area: function(coordss) {
       if (coordss.length < 2) return false;
       var realArea = 0;
       var j = (coordss.length)-1;
@@ -828,68 +827,23 @@ var qSVG = {
       return waiting-count;
     },
 
-    vectorCoordinates2JTS : function(polygon) {
-      var coordinates = [];
-      for (var i = 0; i < polygon.length; i++) {
-        coordinates.push(new jsts.geom.Coordinate(polygon[i].x, polygon[i].y));
+    rayCasting: function(point, polygon, margin) {//note: outer margin detection
+      var x = point.x, y = point.y;
+      var inside = false;
+
+      if (margin) {
+        polygon = inflatePolygon(polygon, sensibilityFormula());
       }
-      return coordinates;
-    },
-/*
-    inflatePolygon : function(poly, spacing) {
-      var geoInput = vectorCoordinates2JTS(poly);
-      geoInput.push(geoInput[0]);
-    
-      var geometryFactory = new jsts.geom.GeometryFactory();
-    
-      var shell = geometryFactory.createPolygon(geoInput);
-      var polygon = shell.buffer(spacing);
-      //try with different cap style
-      //var polygon = shell.buffer(spacing, jsts.operation.buffer.BufferParameters.CAP_FLAT);
-    
-      var inflatedCoordinates = [];
-      var oCoordinates;
-      oCoordinates = polygon.shell.points.coordinates;
-    
-      for (i = 0; i < oCoordinates.length; i++) {
-        var oItem;
-        oItem = oCoordinates[i];
-        inflatedCoordinates.push(new Vector2(Math.ceil(oItem.x), Math.ceil(oItem.y)));
+
+      for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+          var xi = polygon[i].x, yi = polygon[i].y;
+          var xj = polygon[j].x, yj = polygon[j].y;
+
+          var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+          if (intersect) inside = !inside;
       }
-      return inflatedCoordinates;
+      return inside;
     },
-    */
-
-  rayCasting: function(point, polygon, margin) {//note: outer margin detection
-    var x = point.x, y = point.y;
-    var inside = false;
-    console.log("rayCasting START");
-    for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-        var xi = polygon[i].x, yi = polygon[i].y;
-        var xj = polygon[j].x, yj = polygon[j].y;
-        if (margin) {
-          console.log("x " + x + " |y " + y);
-          console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
-          var resizedPoly = this.vectorCoordinates2JTS(polygon);
-          console.log(resizedPoly);
-          console.log("______________")
-        }
-        if (margin) {
-/*             xi += margin;
-            xj -= margin;
-            yi -= margin;
-            yj += margin;
- */            //console.log("xi " + xi + " |xj " + xj + " |yi " + yi + " |yj " + yj);
-        }
-
-        var intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-    console.log("rayCasting END");
-    return inside;
-  },
-
-
     //polygon = [{x1,y1}, {x2,y2}, ...]
     polygonVisualCenter:  function(room) {
     var polygon = room.coords;

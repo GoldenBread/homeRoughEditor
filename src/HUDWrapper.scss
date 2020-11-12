@@ -1,0 +1,31 @@
+$drawerWidth: 240px;
+
+.HUDroot {
+    display: flex;
+    .drawer {
+        @media (max-width: 600px) {
+            width: $drawerWidth;
+            flex-shrink: 0;
+        }
+    }
+    .appBar {
+        @media (max-width: 600px) {
+            width: calc(100% - $drawerWidth);
+            margin-left: $drawerWidth;
+        }
+    }
+    .menuButton {
+        margin-right: 16px;
+        @media (max-width: 600px) {
+            display: none;
+        }
+    }
+    
+    .drawerPaper {
+        width: $drawerWidth;
+    }
+    .content {
+        flex-grow: 1;
+        padding: 24px;
+    }
+}
