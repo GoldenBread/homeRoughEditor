@@ -1,11 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
+import { Button } from '@material-ui/core';
 import FloorPlan from './FloorPlan';
 
 function App() {
+  document.body
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -18,8 +20,13 @@ function App() {
         >
           Learn React
         </a>
-      </header>
-      <FloorPlan />
+      </header> */}
+      <script>
+        function testing
+      </script>
+  
+      <FloorPlan src="./floorplan/" height="800px" width="800px"/>
+      <Button color="primary" onClick={() => }>Test</Button>
     </div>
   );
 }
