@@ -1,12 +1,14 @@
 // import './HUDWrapper.scss'
 
 import React from 'react';
-import { createStyles, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, SwipeableDrawer, Theme } from '@material-ui/core';
+import { Button, createStyles, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, SwipeableDrawer, Theme } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -45,8 +47,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      height: '100vh',
+      display: 'table',
     },
+    playground: {
+      display: 'table-row',
+      height: '100%',
+    }
   }),
 );
 
@@ -67,21 +74,21 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {['button1', 'button2', 'button3', 'button4'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem id="addRoomButton" button key={'Export/Import'}>
+          <ListItemIcon>{<AddIcon />}</ListItemIcon>
+          <ListItemText primary={'Ajouter une pièce'} />
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['button5', 'button6', 'button7'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem id="addOpeningButton" button key={'Export/Import'}>
+          <ListItemIcon>{<AddIcon />}</ListItemIcon>
+          <ListItemText primary={'Ajouter une ouverture'} />
+        </ListItem>
+        <ListItem className="exportImportButton" button key={'Export/Import'}>
+          <ListItemIcon>{<ImportExportIcon />}</ListItemIcon>
+          <ListItemText primary={'Export/Import'} />
+        </ListItem>
       </List>
     </div>
   );
@@ -101,16 +108,16 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Responsive drawer
+            FloorPlan
           </Typography>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Drawer
+          <SwipeableDrawer
             anchor="left"
             open={mobileOpen}
-            // onOpen={handleDrawerToggle}
+            onOpen={handleDrawerToggle}
             onClose={handleDrawerToggle}
             classes={{
               paper: classes.drawerPaper,
@@ -120,7 +127,7 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
             }}
           >
             {drawer}
-          </Drawer>
+          </SwipeableDrawer>
             <Hidden xsDown implementation="css">
             <Drawer
               classes={{
@@ -135,7 +142,9 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {children}
+        <div className={classes.playground}>
+          {children}
+        </div>
       </main>
     </div>
   );

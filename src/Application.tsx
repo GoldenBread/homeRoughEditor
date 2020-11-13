@@ -7,10 +7,8 @@ import { HUDWrapper } from './HUDWrapper';
 const Application: React.FunctionComponent = () => (
   <div className="App">
     <HUDWrapper>
-      <FloorPlan src="./floorplan/" height="800px" width="800px"/>
+      <FloorPlan src="./floorplan/" height="100%" width="100%"/>
     </HUDWrapper>
-    {/* <TestIframe /> */}
-    <Button id="testingButton" color="primary">Test</Button>
   </div>
 )
 
