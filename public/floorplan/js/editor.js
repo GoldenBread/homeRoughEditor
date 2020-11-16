@@ -69,7 +69,7 @@ var editor = {
         }
         else {
           var S = editor.getWallNode(wall.start, wall);
-           if (wallInhibation && isObjectsEquals(wall, wallInhibation)) S = false;
+          //  if (wallInhibation && isObjectsEquals(wall, wallInhibation)) S = false;
           for (var k in S) {
             var eqInter = editor.createEquationFromWall(S[k].wall);
             var angleInter = 90; // TO PASS TEST

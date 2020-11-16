@@ -74,18 +74,18 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem id="addRoomButton" button key={'Export/Import'}>
+        <ListItem id="addRoomButton" button key={'addRoomButton'}>
           <ListItemIcon>{<AddIcon />}</ListItemIcon>
           <ListItemText primary={'Ajouter une pièce'} />
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem id="addOpeningButton" button key={'Export/Import'}>
+        <ListItem id="addOpeningButton" button key={'addOpeningButton'}>
           <ListItemIcon>{<AddIcon />}</ListItemIcon>
           <ListItemText primary={'Ajouter une ouverture'} />
         </ListItem>
-        <ListItem className="exportImportButton" button key={'Export/Import'}>
+        <ListItem className="exportImportButton" button key={'exportImportButton'}>
           <ListItemIcon>{<ImportExportIcon />}</ListItemIcon>
           <ListItemText primary={'Export/Import'} />
         </ListItem>

@@ -9,5 +9,3 @@ $('#testingButton', window.parent.document).click(function() {
     $('#exportImportModal').modal();
     showCurrentPlanPrettifiedJson();
 });
-
-console.log("coucou");

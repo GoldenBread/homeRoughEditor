@@ -1149,7 +1149,6 @@ function _MOUSEMOVE(event) {
   // *****************************************************************************************************
   
   function _MOUSEDOWN(event) {
-    console.log("Hello " + new Date());
     if (event.touches) {
       selectOnHover(event);
       openDrawer(false);
