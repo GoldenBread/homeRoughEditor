@@ -29,48 +29,13 @@ function createDiamondShapeRoom() {
         ["diamond_bottomright", 270],
     ]);
 
-    var sample = { 
-    rooms: [
-        {
-        __comment_enum__: "diamond_topleft, diamond_topright; diamond_bottomleft; diamond_bottomright",
-        shape: "diamond_topleft",
-        dimensions: {
-            left_crown: 3,
-            table: 2.83,
-            right_crown: 5
-        },
-        center: {
-            x: 13,
-            y: 8
-        },
-        objects: {
-            doors: [
-                {
-                    __comment_enum__: "table; left_crown; right_crown; left_pavilion; right_pavilion",
-                    location_side: "left_crown",
-                    location_position_from_edge: 1.5,
-                    size: 1.5
-                },
-                {
-                    location_side: "right_crown",
-                    location_position_from_edge: 1,
-                    size: 1.5
-                }
-            ],
-            windows: [
-                {
-                    location_side: "left_crown",
-                    location_position_from_edge: 0.3,
-                    size: 1
-                },
-                {
-                    location_side: "left_crown",
-                    location_position_from_edge: 1.75,
-                    size: 1
-                }
-            ]
-        }
-    }]};
+    var objectCorresp = new Map([
+        ["doors", "aperture"],
+        ["windows", "fix"]
+    ]);
+
+    var jsonStr = document.getElementById('saveCurrentPlan').value;
+    var sample = JSON.parse(jsonStr);
 
     //define points coordinates
     var tableCommonPoint = Math.sqrt(Math.pow(sample.rooms[0].dimensions.table, 2) / 2);
@@ -132,31 +97,34 @@ function createDiamondShapeRoom() {
     //draw left crown
     createWall(points[4], points[0], sample.rooms[0].shape);
 
-    //marks rooms shape
-    // if (ROOM.find(room => roomCoordsMatch(room, points))) {
-
-    // }
-    var obj = sample.rooms[0].objects.doors[0];
-    var location_side = obj.location_side;
-    var wallFound = WALLS.find(x => (sides.get(location_side)[0] == x.start || sides.get(location_side)[0] == x.end) && (sides.get(location_side)[1] == x.start || sides.get(location_side)[1] == x.end));//TLE TODO handle line with 2 same points
-
-    var ratio = (obj.location_position_from_edge * meter) / distanceBetweenPoints(sides.get(location_side)[0], sides.get(location_side)[1]);
-    var xCenterObj = (1 - ratio) * sides.get(location_side)[0].x + ratio * sides.get(location_side)[1].x;
-    var yCenterObj = (1 - ratio) * sides.get(location_side)[0].y + ratio * sides.get(location_side)[1].y;
-    
-    createObjects({wall: wallFound, x: xCenterObj, y: yCenterObj}, obj.size * meter);
+    //draw doors, windows
+    ["doors", "windows"].forEach(type => {
+        if (sample.rooms[0].objects[type] !== undefined) {
+            sample.rooms[0].objects[type].forEach(obj => {
+                var location_side = obj.location_side;
+                var wallFound = WALLS.find(x => (sides.get(location_side)[0] == x.start || sides.get(location_side)[0] == x.end) && (sides.get(location_side)[1] == x.start || sides.get(location_side)[1] == x.end));//TLE TODO handle line with 2 same points
+            
+                var ratio = (obj.location_position_from_edge * meter) / distanceBetweenPoints(sides.get(location_side)[0], sides.get(location_side)[1]);
+                var xCenterObj = (1 - ratio) * sides.get(location_side)[0].x + ratio * sides.get(location_side)[1].x;
+                var yCenterObj = (1 - ratio) * sides.get(location_side)[0].y + ratio * sides.get(location_side)[1].y;
+                
+                createObjects({wall: wallFound, x: xCenterObj, y: yCenterObj}, objectCorresp.get(type), obj.size * meter);
+            });
+        }
+    });
 }
 
-function createObjects(wallSelect, size) {
-    var modeOption = "aperture";
+function createObjects(wallSelect, modeOption, size) {
     var wall = wallSelect.wall;
     if (typeof(binder) == 'undefined') {
         // family, classe, type, pos, angle, angleSign, size, hinge, thick
         binder = new editor.obj2D("inWall", "doorWindow", modeOption, wallSelect, 0, 0, size, "normal", wall.thick);
+        var limits = limitObj(wall.equations.base, binder.size, wallSelect);
         var angleWall = qSVG.angleDeg(wall.start.x, wall.start.y, wall.end.x, wall.end.y);
-        binder.x = Math.round(wallSelect.x);
-        binder.y = Math.round(wallSelect.y);
+        binder.x = wallSelect.x;
+        binder.y = wallSelect.y;
         binder.angle = angleWall;
+        binder.limit = limits;
         binder.update();
         $('#boxbind').append(binder.graph);
     }
@@ -168,18 +136,8 @@ function createObjects(wallSelect, size) {
     $('#boxinfo').html('Element added');
     fonc_button('select_mode');
     save();
+    allRib();
 }
-
-
-// function roomCoordsMatch(room, points) {
-//     if (points.length == room.coords.length) {
-//         room.coords.forEach(point => {
-//             points.
-//         });
-//     }
-//     room.coords
-//     return false; 
-// }
 
 //
 //QSVG functions
@@ -251,12 +209,12 @@ function isLineBOnLineA(lineA, lineB) {//Line defined by 2 points; Check if line
     return _.round(distanceBetweenPoints(lineA[0], lineA[1]), 9) === distanceA && distanceA === distanceB;
 }
 
+//
+// Export
+
 function rollArray(array, count) {
     return [...array.slice(count, array.length), ...array.slice(0, count)];
 }
-
-//
-// Export
 
 function exportDiamondShapeRoom() {
     var originalWall = ROOM[0];
@@ -289,45 +247,23 @@ function exportDiamondShapeRoom() {
         ["fix", "windows"]
     ]);
 
-    var doors, windows;
+    var objects = {};
+
     OBJDATA.forEach(object => {
         Array.from(sides).forEach(side => {
             if (isLineBOnLineA(side[1], object.limit)) {
-                switch (object.type) {
-                    case "aperture":
-                        if (doors === undefined) {
-                            doors = [];
-                        }
-                        doors.push({
-                            location_side: side[0],
-                            location_position_from_edge: distanceBetweenPoints(side[1][0], { x: object.x, y: object.y }) / meter,
-                            size: object.size / meter
-                        });
-                        break;
-                    case "fix":
-                        if (windows === undefined) {
-                            windows = [];
-                        }
-                        windows.push({
-                            location_side: side[0],
-                            location_position_from_edge: distanceBetweenPoints(side[1][0], { x: object.x, y: object.y }) / meter,
-                            size: object.size / meter
-                        });
-                        break;
+                var exportType = objectCorresp.get(object.type);
+                if (!objects.hasOwnProperty(exportType)) {
+                    objects[exportType] = [];
                 }
+                objects[exportType].push({
+                    location_side: side[0],
+                    location_position_from_edge: distanceBetweenPoints(side[1][0], { x: object.x, y: object.y }) / meter,
+                    size: object.size / meter
+                });
             }
         });
     });
-
-    // var table = [points[3], points[4]];
-    // var left_crown = [points[4], points[0]];
-    // var right_crown = [points[3], points[2]];
-    // var left_pavilion = [points[0], points[1]];
-    // var right_pavilion = [points[2], points[1]];
-    
-
-    //isOnTheSameLine
-    var onLine = isLineBOnLineA(sides.get("table"), door.limit)
 
     points.forEach(point => point = convertToMeters(point));
 
@@ -350,36 +286,10 @@ function exportDiamondShapeRoom() {
                     right_crown: right_crownDistance
                 },
                 center: mp,
-                objects: {
-                    doors: [
-                        {
-                            __comment_enum__: "table; left_crown; right_crown; left_pavilion; right_pavilion",
-                            location_side: "left_pavilion",
-                            location_position_from_edge: 1,
-                            size: 1
-                        },
-                        {
-                            location_side: "right_crown",
-                            location_position_from_edge: 1,
-                            size: 1.5
-                        }
-                    ],
-                    windows: [
-                        {
-                            location_side: "left_crown",
-                            location_position_from_edge: 0.3,
-                            size: 1
-                        },
-                        {
-                            location_side: "left_crown",
-                            location_position_from_edge: 1.75,
-                            size: 1
-                        }
-                    ]
-                }
+                objects: objects
             }
         ]
     };
 
-
+    document.getElementById('saveCurrentPlan').value = JSON.stringify(sample, null, 4);;
 }
