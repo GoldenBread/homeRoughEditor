@@ -1,6 +1,6 @@
 var editor = {
 
-  wall: function(start, end, type, thick) {
+  wall: function(start, end, type, thick, roomShape) {
       this.thick = thick;
       this.start = start;
       this.end = end;
@@ -11,6 +11,7 @@ var editor = {
       this.equations = {};
       this.coords = [];
       this.backUp = false;
+      this.roomShape = roomShape;
   },
 
   // RETURN OBJECTS ARRAY INDEX OF WALLS [WALL1, WALL2, n...] WALLS WITH THIS NODE, EXCEPT PARAM = OBJECT WALL
@@ -685,7 +686,7 @@ var editor = {
         }
       }
       if (!foundRoom) {
-          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add'});
+          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add', roomShape: Rooms.polygons[pp].roomShape});
       }
     }
 
