@@ -17,6 +17,7 @@ function createWall(pointA, pointB, roomShape) {
     var wall = new editor.wall(pointA, pointB, "normal", sizeWall, roomShape);
     WALLS.push(wall);
     editor.architect(WALLS);
+    return wall;
 }
 
 //
@@ -29,6 +30,9 @@ function importRooms() {
         switch (room.shape) {
             case "rectangle":
                 createRectangleShapeRoom(room);
+                break;
+            case "open_bottom_rectangle":
+                createOpenRectangleShapeRoom(room);
                 break;
             case "diamond_topleft":
             case "diamond_topright":
@@ -68,27 +72,65 @@ function createRectangleShapeRoom(room) {
 
     var sides = new Map([
         ["top", [points[0], points[1]]],
-        ["left", [points[1], points[2]]],
+        ["right", [points[1], points[2]]],
         ["bottom", [points[2], points[3]]],
-        ["right", [points[3], points[0]]]
+        ["left", [points[3], points[0]]]
     ]);
 
     translation(points, room.center);
 
     points.forEach(point => point = convertToCoordinates(point));
 
-    createWall(points[0], points[1], room.shape);
-    createWall(points[1], points[2], room.shape);
-    createWall(points[2], points[3], room.shape);
-    createWall(points[3], points[0], room.shape);
+    var walls = [];
+    walls.push(createWall(points[0], points[1], room.shape));
+    walls.push(createWall(points[1], points[2], room.shape));
+    walls.push(createWall(points[2], points[3], room.shape));
+    walls.push(createWall(points[3], points[0], room.shape));
 
     scanObjects(room.objects, sides);
+
+    ROOM[ROOM.length - 1].walls = walls;
 }
 
-var objectCorrespImport = new Map([
-    ["doors", "aperture"],
-    ["windows", "fix"]
-]);
+function createOpenRectangleShapeRoom(room) {//TLE TODO FAIRE EN SORTE QUE CE SOIT UNE ROOM
+    var points = [
+        {
+            x: 0,
+            y: 0
+        },
+        {
+            x: room.dimensions.width,
+            y: 0
+        },
+        {
+            x: room.dimensions.width,
+            y: room.dimensions.height
+        },
+        {
+            x: 0,
+            y: room.dimensions.height
+        }
+    ];
+
+    var sides = new Map([
+        ["top", [points[0], points[1]]],
+        ["right", [points[1], points[2]]],
+        ["left", [points[3], points[0]]]
+    ]);
+
+    translation(points, room.center);
+
+    points.forEach(point => point = convertToCoordinates(point));
+
+    var walls = [];
+    walls.push(createWall(points[0], points[1], room.shape));
+    walls.push(createWall(points[1], points[2], room.shape));
+    walls.push(createWall(points[3], points[0], room.shape));
+
+    scanObjects(room.objects, sides);
+ 
+    ROOM[ROOM.length - 1].walls = walls;
+}
 
 function createDiamondShapeRoom(room) {
     var angleShape = new Map([
@@ -140,23 +182,26 @@ function createDiamondShapeRoom(room) {
     //convert meter to svg coordinates
     points.forEach(point => point = convertToCoordinates(point));
 
+    var walls = [];
     //draw table
-    createWall(points[0], points[1], room.shape);
+    walls.push(createWall(points[0], points[1], room.shape));
 
     //draw right crown
-    createWall(points[1], points[2], room.shape);
+    walls.push(createWall(points[1], points[2], room.shape));
 
     //draw right pavilion
-    createWall(points[2], points[3], room.shape);
+    walls.push(createWall(points[2], points[3], room.shape));
 
     //draw left pavilion
-    createWall(points[3], points[4], room.shape);
+    walls.push(createWall(points[3], points[4], room.shape));
 
     //draw left crown
-    createWall(points[4], points[0], room.shape);
+    walls.push(createWall(points[4], points[0], room.shape));
 
     //draw doors, windows
     scanObjects(room.objects, sides);
+
+    ROOM[ROOM.length - 1].walls = walls;
 }
 
 function createFlyingWingShapeRoom(room) {
@@ -210,15 +255,22 @@ function createFlyingWingShapeRoom(room) {
 
     points.forEach(point => point = convertToCoordinates(point));
 
-    createWall(points[0], points[1], room.shape);
-    createWall(points[1], points[2], room.shape);
-    createWall(points[2], points[3], room.shape);
-    createWall(points[3], points[4], room.shape);
-    createWall(points[4], points[5], room.shape);
-    createWall(points[5], points[0], room.shape);
+    var walls = [];
+    walls.push(createWall(points[0], points[1], room.shape));
+    walls.push(createWall(points[1], points[2], room.shape));
+    walls.push(createWall(points[2], points[3], room.shape));
+    walls.push(createWall(points[3], points[4], room.shape));
+    walls.push(createWall(points[4], points[5], room.shape));
+    walls.push(createWall(points[5], points[0], room.shape));
 
     scanObjects(room.objects, sides);
+    ROOM[ROOM.length - 1].walls = walls;
 }
+
+var objectCorrespImport = new Map([
+    ["doors", "aperture"],
+    ["windows", "fix"]
+]);
 
 function scanObjects(objects, sides) {
     ["doors", "windows"].forEach(type => {
@@ -345,6 +397,9 @@ function exportRooms() {
             case "rectangle":
                 exportRectangleShapeRoom(room);
                 break;
+            case "open_bottom_rectangle":
+                exportOpenRectangleShapeRoom(room);
+                break;
             case "diamond_topleft":
             case "diamond_topright":
             case "diamond_bottomleft":
@@ -370,6 +425,46 @@ function exportRectangleShapeRoom(room) {
         ["top", [points[1], points[0]]],
         ["left", [points[2], points[1]]],
         ["bottom", [points[3], points[2]]],
+        ["right", [points[0], points[3]]]
+    ]);
+
+    objects = exportObjects(OBJDATA, sides);
+
+    points.forEach(point => point = convertToMeters(point));
+
+    var mp = meanPoint(points);
+
+    translation(points, mp, true);
+
+    var widthDistance, heightDistance;
+    widthDistance = distanceBetweenPoints(sides.get("top")[0], sides.get("top")[1]);
+    heightDistance = distanceBetweenPoints(sides.get("left")[0], sides.get("left")[1]);
+
+    var sample = {
+        rooms: [
+            {
+                shape: room.roomShape,
+                dimensions: {
+                    width: widthDistance,
+                    height: heightDistance
+                },
+                center: mp,
+                objects: objects
+            }
+        ]
+    };
+
+    document.getElementById('saveCurrentPlan').value = JSON.stringify(sample, null, 4);
+}
+
+function exportOpenRectangleShapeRoom(room) {
+    var points = _.cloneDeep(room.coords.slice(0, room.coords.length - 1));
+
+    points = rollArray(points, 2);
+
+    var sides = new Map([
+        ["top", [points[1], points[0]]],
+        ["left", [points[2], points[1]]],
         ["right", [points[0], points[3]]]
     ]);
 
@@ -539,3 +634,17 @@ function exportObjects(objects, sides) {
     return exportedObjects;
 } 
 
+function moveRoom() {
+    if (mode == 'edit_room_mode') {
+        var selectedRoom = ROOM[binder.id];
+        // var objWall = editor.objFromWall(selectedRoom.walls[0]); // LIST OBJ ON EDGE
+        delete selectedRoom.walls[0];
+        delete WALLS[0];
+        editor.wallsComputing(WALLS);
+        console.log('moveRome');
+    }
+}
+
+function moveWallsAndObjects(room) {
+    room.coords.wall
+}

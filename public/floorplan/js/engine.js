@@ -94,6 +94,9 @@ function _MOUSEMOVE(event) {
   }
   
   event.preventDefault();
+
+  moveRoom();
+
   $('.sub').hide(100);
   
   //**************************************************************************
