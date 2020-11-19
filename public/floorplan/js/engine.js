@@ -95,7 +95,7 @@ function _MOUSEMOVE(event) {
   
   event.preventDefault();
 
-  moveRoom();
+  moveRoom(event);
 
   $('.sub').hide(100);
   
@@ -266,7 +266,8 @@ function _MOUSEMOVE(event) {
         'fill-opacity': 0.5,
         stroke: '#c9c14c',
         'fill-rule': 'evenodd',
-        'stroke-width': 3
+        'stroke-width': 3,
+        'class': 'room-' + roomTarget.walls[0].roomId
       });
       binder.type = 'room';
       binder.area = roomTarget.area;
@@ -724,7 +725,6 @@ function _MOUSEMOVE(event) {
       }
       
       // WALL MOVING ----BINDER TYPE SEGMENT-------- FUNCTION FOR H,V and Calculate Vectorial Translation
-      console.log("binder.type=" + binder.type + " action=" + action);
       if (binder.type == 'segment' && action == 1) {
         rib();
         
@@ -946,7 +946,6 @@ function _MOUSEMOVE(event) {
     // ---DRAG VIEWBOX PANNING -------------------------------------------------------
     
     if (mode == 'select_mode' && drag == 'on') {
-      console.log("Moving map");
       snap = calcul_snap(event, grid_snap);
       $('#lin').css('cursor', 'move');
       distX = (snap.xMouse - pox) * factor;
@@ -954,10 +953,8 @@ function _MOUSEMOVE(event) {
       // pox = event.pageX;
       // poy = event.pageY;
       zoom_maker('zoomdrag', distX, distY);
-      console.log(event);
       // console.log('snap.xMouse=' + snap.xMouse + ' pox=' + pox + ' factor=' + factor);
     }
-    console.log("yep");
   } // END MOUSEMOVE
   
   function selectOnHover(event) {
@@ -1160,6 +1157,8 @@ function _MOUSEMOVE(event) {
       pinchStart(event);
     }
     event.preventDefault();
+
+    pressDownRoom(event);
     // *******************************************************************
     // **************************   DISTANCE MODE   **********************
     // *******************************************************************
@@ -1467,6 +1466,7 @@ function _MOUSEMOVE(event) {
       }
     }
     
+    pressUpRoom();
     //**************************************************************************
     //********************   TEXTE   MODE **************************************
     //**************************************************************************
@@ -1487,7 +1487,24 @@ function _MOUSEMOVE(event) {
       var targetBox = 'boxcarpentry';
       if (OBJDATA[OBJDATA.length-1].class == 'energy') targetBox = 'boxEnergy';
       if (OBJDATA[OBJDATA.length-1].class == 'furniture') targetBox = 'boxFurniture';
-      $('#'+targetBox).append(OBJDATA[OBJDATA.length-1].graph);
+
+      if (targetBox == 'boxcarpentry') {
+        if (wallSelect.wall.roomId && !$('#openings-room-' + wallSelect.wall.roomId).length) {
+          $('#boxcarpentry').append(qSVG.create('ici', 'g', {
+            id: 'openings-room-' + wallSelect.wall.roomId,
+            class: 'room-' + wallSelect.wall.roomId
+          }));
+        }
+  
+        if (wallSelect.wall.roomId) {
+          $('#openings-room-' + wallSelect.wall.roomId).append(OBJDATA[OBJDATA.length-1].graph);
+        } else {
+          $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
+        }
+      } else {
+        $('#'+targetBox).append(OBJDATA[OBJDATA.length-1].graph);
+      }
+
       delete binder;
       $('#boxinfo').html('Object added');
       fonc_button('select_mode');
@@ -1590,7 +1607,20 @@ function _MOUSEMOVE(event) {
             }
             OBJDATA.push(binder);
             binder.graph.remove();
-            $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
+
+            if (wallSelect.wall.roomId && !$('#openings-room-' + wallSelect.wall.roomId).length) {
+              $('#boxcarpentry').append(qSVG.create('ici', 'g', {
+                id: 'openings-room-' + wallSelect.wall.roomId,
+                class: 'room-' + wallSelect.wall.roomId
+              }));
+            }
+      
+            if (wallSelect.wall.roomId) {
+              $('#openings-room-' + wallSelect.wall.roomId).append(OBJDATA[OBJDATA.length-1].graph);
+            } else {
+              $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
+            }
+      
             delete binder;
             $('#boxinfo').html('Element added');
             fonc_button('select_mode');

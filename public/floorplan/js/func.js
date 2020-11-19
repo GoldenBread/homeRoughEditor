@@ -541,8 +541,6 @@ function inflatePolygon(poly, spacing) {
 
   var inflatedCoordinates = [];
   var oCoordinates;
-  console.log(poly);
-  console.log(polygon);
   oCoordinates = polygon._shell._points._coordinates;
 
   for (i = 0; i < oCoordinates.length; i++) {
@@ -802,8 +800,6 @@ function limitObj(equation, size, coords,message = false) {
 }
 
 function zoom_maker(lens, xmove, xview) {
-  console.log("zoomMM " + lens + "|" + xmove + "|" + xview);
-
     if (lens == 'zoomout' && zoom > 1 && zoom < 18) {
         zoom--;
         width_viewbox += xmove;

@@ -1,6 +1,6 @@
 var editor = {
 
-  wall: function(start, end, type, thick, roomShape) {
+  wall: function(start, end, type, thick, roomShape, roomId) {
       this.thick = thick;
       this.start = start;
       this.end = end;
@@ -12,6 +12,7 @@ var editor = {
       this.coords = [];
       this.backUp = false;
       this.roomShape = roomShape;
+      this.roomId = roomId;
   },
 
   // RETURN OBJECTS ARRAY INDEX OF WALLS [WALL1, WALL2, n...] WALLS WITH THIS NODE, EXCEPT PARAM = OBJECT WALL
@@ -33,11 +34,11 @@ var editor = {
 
   wallsComputing: function(WALLS, action = false) {
     // IF ACTION == MOVE -> equation2 exist !!!!!
-    if (action != 'move') {
+    // if (action != 'move') {
       $('#boxwall').empty();
-    } else {
-      $('#boxwall').children().addClass('wall-to-remove');
-    }
+    // } else {
+    //   $('#boxwall').children().addClass('wall-to-remove');
+    // }
     $('#boxArea').empty();
 
     for (var vertice = 0; vertice < WALLS.length; vertice++) {
@@ -226,7 +227,18 @@ var editor = {
       }
 
       wall.graph = editor.makeWall(dWay);
-      $('#boxwall').append(wall.graph);
+      if (wall.roomId && !$('#walls-room-' + wall.roomId).length) {
+        $('#boxwall').append(qSVG.create('ici', 'g', {
+          id: 'walls-room-' + wall.roomId,
+          class: 'room-' + wall.roomId
+        }));
+      }
+
+      if (wall.roomId) {
+        $('#walls-room-' + wall.roomId).append(wall.graph);
+      } else {
+        $('#boxwall').append(wall.graph);
+      }
     }
   },
 
@@ -604,7 +616,6 @@ var editor = {
 
 
       this.update = function() {
-        console.log("update")
         this.width = (this.size / meter).toFixed(2);
         this.height= (this.thick / meter).toFixed(2);
         cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
@@ -749,11 +760,11 @@ var editor = {
         qSVG.create('boxRoom', 'path', {
               d: pathCreate,
               fill: 'url(#'+ROOM[rr].color+')',
-              'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room'});
+              'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         qSVG.create('boxSurface', 'path', {
               d: pathCreate,
-              fill: '#fff', 'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room'});
+              fill: '#fff', 'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         var centroid = qSVG.polygonVisualCenter(ROOM[rr]);
 

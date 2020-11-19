@@ -11,13 +11,35 @@ function importPlanJson() {
     loadObj(jsonObj);
 }
 
-function createWall(pointA, pointB, roomShape) {
+function createWall(pointA, pointB, roomShape, roomId) {
     var sizeWall = wallSize;
     if (mode == 'partition_mode') sizeWall = partitionSize;
-    var wall = new editor.wall(pointA, pointB, "normal", sizeWall, roomShape);
+    var wall = new editor.wall(pointA, pointB, "normal", sizeWall, roomShape, roomId);
     WALLS.push(wall);
     editor.architect(WALLS);
     return wall;
+}
+
+function IDGenerator() {
+    this.length = 8;
+    this.timestamp = +new Date;
+    
+    var _getRandomInt = function( min, max ) {
+       return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+    }
+    
+    this.generate = function() {
+        var ts = this.timestamp.toString();
+        var parts = ts.split( "" ).reverse();
+        var id = "";
+        
+        for( var i = 0; i < this.length; ++i ) {
+           var index = _getRandomInt( 0, parts.length - 1 );
+           id += parts[index];	 
+        }
+        
+        return id;
+    }
 }
 
 //
@@ -81,15 +103,19 @@ function createRectangleShapeRoom(room) {
 
     points.forEach(point => point = convertToCoordinates(point));
 
+    var generator = new IDGenerator();
+    var roomId = generator.generate();
+
     var walls = [];
-    walls.push(createWall(points[0], points[1], room.shape));
-    walls.push(createWall(points[1], points[2], room.shape));
-    walls.push(createWall(points[2], points[3], room.shape));
-    walls.push(createWall(points[3], points[0], room.shape));
+    walls.push(createWall(points[0], points[1], room.shape, roomId));
+    walls.push(createWall(points[1], points[2], room.shape, roomId));
+    walls.push(createWall(points[2], points[3], room.shape, roomId));
+    walls.push(createWall(points[3], points[0], room.shape, roomId));
 
     scanObjects(room.objects, sides);
 
     ROOM[ROOM.length - 1].walls = walls;
+    editor.architect(WALLS);
 }
 
 function createOpenRectangleShapeRoom(room) {//TLE TODO FAIRE EN SORTE QUE CE SOIT UNE ROOM
@@ -122,14 +148,18 @@ function createOpenRectangleShapeRoom(room) {//TLE TODO FAIRE EN SORTE QUE CE SO
 
     points.forEach(point => point = convertToCoordinates(point));
 
+    var generator = new IDGenerator();
+    var roomId = generator.generate();
+
     var walls = [];
-    walls.push(createWall(points[0], points[1], room.shape));
-    walls.push(createWall(points[1], points[2], room.shape));
-    walls.push(createWall(points[3], points[0], room.shape));
+    walls.push(createWall(points[0], points[1], room.shape, roomId));
+    walls.push(createWall(points[1], points[2], room.shape, roomId));
+    walls.push(createWall(points[3], points[0], room.shape, roomId));
 
     scanObjects(room.objects, sides);
  
     ROOM[ROOM.length - 1].walls = walls;
+    editor.architect(WALLS);
 }
 
 function createDiamondShapeRoom(room) {
@@ -182,26 +212,30 @@ function createDiamondShapeRoom(room) {
     //convert meter to svg coordinates
     points.forEach(point => point = convertToCoordinates(point));
 
+    var generator = new IDGenerator();
+    var roomId = generator.generate();
+
     var walls = [];
     //draw table
-    walls.push(createWall(points[0], points[1], room.shape));
+    walls.push(createWall(points[0], points[1], room.shape, roomId));
 
     //draw right crown
-    walls.push(createWall(points[1], points[2], room.shape));
+    walls.push(createWall(points[1], points[2], room.shape, roomId));
 
     //draw right pavilion
-    walls.push(createWall(points[2], points[3], room.shape));
+    walls.push(createWall(points[2], points[3], room.shape, roomId));
 
     //draw left pavilion
-    walls.push(createWall(points[3], points[4], room.shape));
+    walls.push(createWall(points[3], points[4], room.shape, roomId));
 
     //draw left crown
-    walls.push(createWall(points[4], points[0], room.shape));
+    walls.push(createWall(points[4], points[0], room.shape, roomId));
 
     //draw doors, windows
     scanObjects(room.objects, sides);
 
     ROOM[ROOM.length - 1].walls = walls;
+    editor.architect(WALLS);
 }
 
 function createFlyingWingShapeRoom(room) {
@@ -255,19 +289,23 @@ function createFlyingWingShapeRoom(room) {
 
     points.forEach(point => point = convertToCoordinates(point));
 
+    var generator = new IDGenerator();
+    var roomId = generator.generate();
+
     var walls = [];
-    walls.push(createWall(points[0], points[1], room.shape));
-    walls.push(createWall(points[1], points[2], room.shape));
-    walls.push(createWall(points[2], points[3], room.shape));
-    walls.push(createWall(points[3], points[4], room.shape));
-    walls.push(createWall(points[4], points[5], room.shape));
-    walls.push(createWall(points[5], points[0], room.shape));
+    walls.push(createWall(points[0], points[1], room.shape, roomId));
+    walls.push(createWall(points[1], points[2], room.shape, roomId));
+    walls.push(createWall(points[2], points[3], room.shape, roomId));
+    walls.push(createWall(points[3], points[4], room.shape, roomId));
+    walls.push(createWall(points[4], points[5], room.shape, roomId));
+    walls.push(createWall(points[5], points[0], room.shape, roomId));
 
     scanObjects(room.objects, sides);
     ROOM[ROOM.length - 1].walls = walls;
+    editor.architect(WALLS);
 }
 
-var objectCorrespImport = new Map([
+var openingCorrespImport = new Map([
     ["doors", "aperture"],
     ["windows", "fix"]
 ]);
@@ -283,13 +321,13 @@ function scanObjects(objects, sides) {
                 var xCenterObj = (1 - ratio) * sides.get(location_side)[0].x + ratio * sides.get(location_side)[1].x;
                 var yCenterObj = (1 - ratio) * sides.get(location_side)[0].y + ratio * sides.get(location_side)[1].y;
                 
-                createObjects({wall: wallFound, x: xCenterObj, y: yCenterObj}, objectCorrespImport.get(type), obj.size * meter);
+                createOpenings({wall: wallFound, x: xCenterObj, y: yCenterObj}, openingCorrespImport.get(type), obj.size * meter);
             });
         }
     });
 }
 
-function createObjects(wallSelect, modeOption, size) {
+function createOpenings(wallSelect, modeOption, size) {
     var wall = wallSelect.wall;
     if (typeof(binder) == 'undefined') {
         // family, classe, type, pos, angle, angleSign, size, hinge, thick
@@ -306,7 +344,20 @@ function createObjects(wallSelect, modeOption, size) {
 
     OBJDATA.push(binder);
     binder.graph.remove();
-    $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
+
+    if (wall.roomId && !$('#openings-room-' + wall.roomId).length) {
+        $('#boxcarpentry').append(qSVG.create('ici', 'g', {
+            id: 'openings-room-' + wall.roomId,
+            class: 'room-' + wall.roomId
+        }));
+    }
+
+    if (wall.roomId) {
+        $('#openings-room-' + wall.roomId).append(OBJDATA[OBJDATA.length-1].graph);
+    } else {
+        $('#boxcarpentry').append(OBJDATA[OBJDATA.length-1].graph);
+    }
+
     delete binder;
     $('#boxinfo').html('Element added');
     fonc_button('select_mode');
@@ -428,7 +479,7 @@ function exportRectangleShapeRoom(room) {
         ["right", [points[0], points[3]]]
     ]);
 
-    objects = exportObjects(OBJDATA, sides);
+    objects = exportOpenings(OBJDATA, sides);
 
     points.forEach(point => point = convertToMeters(point));
 
@@ -468,7 +519,7 @@ function exportOpenRectangleShapeRoom(room) {
         ["right", [points[0], points[3]]]
     ]);
 
-    objects = exportObjects(OBJDATA, sides);
+    objects = exportOpenings(OBJDATA, sides);
 
     points.forEach(point => point = convertToMeters(point));
 
@@ -520,7 +571,7 @@ function exportDiamondShapeRoom(room) {
         ["right_pavilion", [points[4], points[3]]]
     ]);
 
-    objects = exportObjects(OBJDATA, sides);
+    objects = exportOpenings(OBJDATA, sides);
 
     points.forEach(point => point = convertToMeters(point));
 
@@ -575,7 +626,7 @@ function exportFlyingWingShapeRoom(room) {
         ["right_wingtip", [points[0], points[5]]]
     ]);
 
-    objects = exportObjects(OBJDATA, sides);
+    objects = exportOpenings(OBJDATA, sides);
 
     points.forEach(point => point = convertToMeters(point));
 
@@ -608,18 +659,18 @@ function exportFlyingWingShapeRoom(room) {
     document.getElementById('saveCurrentPlan').value = JSON.stringify(sample, null, 4);
 }
 
-var objectCorrespExport = new Map([
+var openingCorrespExport = new Map([
     ["aperture", "doors"],
     ["fix", "windows"]
 ]);
 
-function exportObjects(objects, sides) {
+function exportOpenings(objects, sides) {
     var exportedObjects = {};
 
     objects.forEach(object => {
         Array.from(sides).forEach(side => {
             if (isLineBOnLineA(side[1], object.limit)) {
-                var exportType = objectCorrespExport.get(object.type);
+                var exportType = openingCorrespExport.get(object.type);
                 if (!exportedObjects.hasOwnProperty(exportType)) {
                     exportedObjects[exportType] = [];
                 }
@@ -632,19 +683,59 @@ function exportObjects(objects, sides) {
         });
     });
     return exportedObjects;
-} 
+}
 
-function moveRoom() {
+flag=false; //to check if the mouse is currently down
+
+function pressDownRoom(e) {
     if (mode == 'edit_room_mode') {
-        var selectedRoom = ROOM[binder.id];
-        // var objWall = editor.objFromWall(selectedRoom.walls[0]); // LIST OBJ ON EDGE
-        delete selectedRoom.walls[0];
-        delete WALLS[0];
-        editor.wallsComputing(WALLS);
-        console.log('moveRome');
+        var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
+        for (var i = 0; i < els.length; i++) {
+            flag=true;
+            x1=e.clientX;
+            y1=e.clientY;
+            var t=els[i].getAttribute('transform');
+            if(t){
+                var parts  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(t);
+                var firstX = parts[1], firstY = parts[2];
+                console.log('firstX:' + firstX + ' firstY:' + firstY);
+                x1=x1-firstX*1;
+                y1=y1-firstY*1;
+            }
+        }
     }
 }
 
-function moveWallsAndObjects(room) {
-    room.coords.wall
+function moveRoom(e) {
+    if (mode == 'edit_room_mode') {
+        // var selectedRoom = ROOM[binder.id];
+        var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
+        if(flag){
+            for (var i = 0; i < els.length; i++) {
+                x=e.clientX;
+                y=e.clientY;
+                t="translate("+(x-x1)+","+(y-y1)+")"
+                els[i].setAttribute('transform',t);
+            }
+        }
+
+        // var objWall = editor.objFromWall(selectedRoom.walls[0]); // LIST OBJ ON EDGE
+        // svg.setAttributeNS(null, 'y', 20);
+        // selectedRoom.walls.shift();
+        // WALLS.shift();
+        // editor.wallsComputing(WALLS);
+        // console.log('moveRome');
+    }
 }
+
+function pressUpRoom() {
+    if (mode == 'edit_room_mode') {
+        flag = false;
+
+        //TODO TLE recréer la pièce
+    }
+}
+
+// function moveWallsAndObjects(room) {
+//     room.coords.wall
+// }
