@@ -267,7 +267,7 @@ function _MOUSEMOVE(event) {
         stroke: '#c9c14c',
         'fill-rule': 'evenodd',
         'stroke-width': 3,
-        'class': roomTarget.walls'room-' + roomTarget.walls[0].roomId
+        'class': 'room-' + roomTarget.walls[0].roomId
       });
       binder.type = 'room';
       binder.area = roomTarget.area;
