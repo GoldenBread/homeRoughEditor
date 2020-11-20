@@ -22,8 +22,8 @@ meter = 60;
 grid_snap = 'off';
 colorbackground = "#ffffff";
 colorline = "#fff";
-colorroom = "#f0daaf";
-colorWall = "#8c1212";
+colorroom = "#2f313644";
+colorWall = "#83878f";
 pox = 0;
 poy = 0;
 segment = 0;
@@ -1127,33 +1127,44 @@ function inWallRib(wall, option = false) {
       var valueText = Math.abs(ribMaster[t][n-1].distance - ribMaster[t][n].distance);
       var angleText = angleTextValue;
       if (found) {
-          if (ribMaster[t][n-1].side == 'down') {shift = -shift+10;}
-          if (angleText > 89 || angleText < -89) {
-            angleText-=180;
-            if (ribMaster[t][n-1].side == 'down') {shift = -5;}
-            else shift = -shift+10;
-          }
+        if (ribMaster[t][n-1].side == 'down') {shift = -shift+10;}
+        if (angleText > 89 || angleText < -89) {
+          angleText-=180;
+          if (ribMaster[t][n-1].side == 'down') {shift = -5;}
+          else shift = -shift+10;
+        }
 
 
 
-          sizeText[n] = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          var startText = qSVG.middle(ribMaster[t][n-1].coords.x, ribMaster[t][n-1].coords.y, ribMaster[t][n].coords.x, ribMaster[t][n].coords.y);
-          sizeText[n].setAttributeNS(null, 'x', startText.x);
-          sizeText[n].setAttributeNS(null, 'y', (startText.y)+shift);
-          sizeText[n].setAttributeNS(null, 'text-anchor', 'middle');
-          sizeText[n].setAttributeNS(null, 'font-family', 'roboto');
-          sizeText[n].setAttributeNS(null, 'stroke', '#ffffff');
-          sizeText[n].textContent = valueText.toFixed(2);
-          if (sizeText[n].textContent < 1) {
-            sizeText[n].setAttributeNS(null, 'font-size', '0.8em');
-            sizeText[n].textContent = sizeText[n].textContent.substring(1, sizeText[n].textContent.length);
-          }
-          else sizeText[n].setAttributeNS(null, 'font-size', '1em');
-          sizeText[n].setAttributeNS(null, 'stroke-width', '0.27px');
-          sizeText[n].setAttributeNS(null, 'fill', '#666666');
-          sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
+        sizeText[n] = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        var startText = qSVG.middle(ribMaster[t][n-1].coords.x, ribMaster[t][n-1].coords.y, ribMaster[t][n].coords.x, ribMaster[t][n].coords.y);
+        sizeText[n].setAttributeNS(null, 'x', startText.x);
+        sizeText[n].setAttributeNS(null, 'y', (startText.y)+shift);
+        sizeText[n].setAttributeNS(null, 'text-anchor', 'middle');
+        sizeText[n].setAttributeNS(null, 'font-family', 'roboto');
+        sizeText[n].setAttributeNS(null, 'stroke', '#ffffff');
+        sizeText[n].textContent = valueText.toFixed(2);
+        if (sizeText[n].textContent < 1) {
+          sizeText[n].setAttributeNS(null, 'font-size', '0.8em');
+          sizeText[n].textContent = sizeText[n].textContent.substring(1, sizeText[n].textContent.length);
+        }
+        else sizeText[n].setAttributeNS(null, 'font-size', '1em');
+        sizeText[n].setAttributeNS(null, 'stroke-width', '0.27px');
+        sizeText[n].setAttributeNS(null, 'fill', '#666666');
+        sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
 
+        if (wall.roomId && !$('#ribs-room-' + wall.roomId).length) {
+          $('#boxRib').append(qSVG.create('ici', 'g', {
+            id: 'ribs-room-' + wall.roomId,
+            class: 'room-' + wall.roomId
+          }));
+        }
+  
+        if (wall.roomId) {
+          $('#ribs-room-' + wall.roomId).append(sizeText[n]);
+        } else {
           $('#boxRib').append(sizeText[n]);
+        }
       }
     }
   }
@@ -1266,32 +1277,43 @@ function rib(shift = 5) {
           }
 
           if (found) {
-              var angleText = WALLS[ribMaster[t][a][n].wallIndex].angle*(180/Math.PI);
-              var shiftValue = -shift;
-              if (ribMaster[t][a][n-1].side == 'down') {shiftValue = -shiftValue+10;}
-              if (angleText > 90 || angleText < -89) {
-                angleText-=180;
-                if (ribMaster[t][a][n-1].side == 'down') {shiftValue = -shift;}
-                else shiftValue = -shiftValue+10;
-              }
-              sizeText[n] = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-              var startText = qSVG.middle(ribMaster[t][a][n-1].coords.x, ribMaster[t][a][n-1].coords.y, ribMaster[t][a][n].coords.x, ribMaster[t][a][n].coords.y);
-              sizeText[n].setAttributeNS(null, 'x', startText.x);
-              sizeText[n].setAttributeNS(null, 'y', (startText.y)+(shiftValue));
-              sizeText[n].setAttributeNS(null, 'text-anchor', 'middle');
-              sizeText[n].setAttributeNS(null, 'font-family', 'roboto');
-              sizeText[n].setAttributeNS(null, 'stroke', '#ffffff');
-              sizeText[n].textContent = valueText.toFixed(2);
-              if (sizeText[n].textContent < 1) {
-                sizeText[n].setAttributeNS(null, 'font-size', '0.73em');
-                sizeText[n].textContent = sizeText[n].textContent.substring(1, sizeText[n].textContent.length);
-              }
-              else sizeText[n].setAttributeNS(null, 'font-size', '0.9em');
-              sizeText[n].setAttributeNS(null, 'stroke-width', '0.2px');
-              sizeText[n].setAttributeNS(null, 'fill', '#555555');
-              sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
+            var angleText = WALLS[ribMaster[t][a][n].wallIndex].angle*(180/Math.PI);
+            var shiftValue = -shift;
+            if (ribMaster[t][a][n-1].side == 'down') {shiftValue = -shiftValue+10;}
+            if (angleText > 90 || angleText < -89) {
+              angleText-=180;
+              if (ribMaster[t][a][n-1].side == 'down') {shiftValue = -shift;}
+              else shiftValue = -shiftValue+10;
+            }
+            sizeText[n] = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            var startText = qSVG.middle(ribMaster[t][a][n-1].coords.x, ribMaster[t][a][n-1].coords.y, ribMaster[t][a][n].coords.x, ribMaster[t][a][n].coords.y);
+            sizeText[n].setAttributeNS(null, 'x', startText.x);
+            sizeText[n].setAttributeNS(null, 'y', (startText.y)+(shiftValue));
+            sizeText[n].setAttributeNS(null, 'text-anchor', 'middle');
+            sizeText[n].setAttributeNS(null, 'font-family', 'roboto');
+            sizeText[n].setAttributeNS(null, 'stroke', '#ffffff');
+            sizeText[n].textContent = valueText.toFixed(2);
+            if (sizeText[n].textContent < 1) {
+              sizeText[n].setAttributeNS(null, 'font-size', '0.73em');
+              sizeText[n].textContent = sizeText[n].textContent.substring(1, sizeText[n].textContent.length);
+            }
+            else sizeText[n].setAttributeNS(null, 'font-size', '0.9em');
+            sizeText[n].setAttributeNS(null, 'stroke-width', '0.2px');
+            sizeText[n].setAttributeNS(null, 'fill', '#555555');
+            sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
 
+            if (wall.roomId && !$('#ribs-room-' + wall.roomId).length) {
+              $('#boxRib').append(qSVG.create('ici', 'g', {
+                id: 'ribs-room-' + wall.roomId,
+                class: 'room-' + wall.roomId
+              }));
+            }
+      
+            if (wall.roomId) {
+              $('#ribs-room-' + wall.roomId).append(sizeText[n]);
+            } else {
               $('#boxRib').append(sizeText[n]);
+            }
           }
         }
       }
@@ -1525,9 +1547,13 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
       construc.params.resizeLimit.width = {min:60, max:200};
     }
     if (typeObj == 'aperture') {
-      construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#ccc", 'stroke': "#494646", 'strokeDashArray': '5,5'});
-      construc.push({'path':"M "+(-sizeObj/2)+","+(-(thickObj/2))+" L "+(-sizeObj/2)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
-      construc.push({'path':"M "+((sizeObj/2)-5)+","+(-(thickObj/2))+" L "+((sizeObj/2)-5)+","+thickObj/2+" L "+(sizeObj/2)+","+thickObj/2+" L "+(sizeObj/2)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
+      // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(255, 255, 255);stroke-width:13" stroke-linecap="round" />
+      // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(66, 68, 72);stroke-width:10" stroke-linecap="round" />
+      construc.push({'line': true, 'x1': (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'line': true, 'x1': (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
+      // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#ccc", 'stroke': "#494646", 'strokeDashArray': '5,5'});
+      // construc.push({'path':"M "+(-sizeObj/2)+","+(-(thickObj/2))+" L "+(-sizeObj/2)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
+      // construc.push({'path':"M "+((sizeObj/2)-5)+","+(-(thickObj/2))+" L "+((sizeObj/2)-5)+","+thickObj/2+" L "+(sizeObj/2)+","+thickObj/2+" L "+(sizeObj/2)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
       construc.params.resize = true;
       construc.params.resizeLimit.width = {min:40, max:500};
     }

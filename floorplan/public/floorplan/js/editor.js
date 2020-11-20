@@ -226,18 +226,28 @@ var editor = {
         dWay = dWay + "L"+interDw.x+","+interDw.y+" L"+interUp.x+","+interUp.y+" Z";
       }
 
-      wall.graph = editor.makeWall(dWay);
-      if (wall.roomId && !$('#walls-room-' + wall.roomId).length) {
-        $('#boxwall').append(qSVG.create('ici', 'g', {
-          id: 'walls-room-' + wall.roomId,
-          class: 'room-' + wall.roomId
-        }));
+      // wall.graph = editor.makeWall(dWay);
+      if (wall.roomId) {
+        if (!$('#walls-room-' + wall.roomId).length) {
+          var isPolygon = wall.roomShape != 'open_bottom_rectangle';
+
+          $('#boxwall').append(qSVG.create('ici', isPolygon ? 'polygon' : 'polyline', {
+            id: 'walls-room-' + wall.roomId,
+            class: 'room-' + wall.roomId,
+            fill: "none",
+            stroke: "black",
+            style: "stroke:rgb(131, 135, 143);stroke-width:4",
+            points: wall.start.x + ',' + wall.start.y + ' ',
+            "start-point": wall.start.x + ',' + wall.start.y
+          }));
+        }
       }
 
       if (wall.roomId) {
-        $('#walls-room-' + wall.roomId).append(wall.graph);
-      } else {
-        $('#boxwall').append(wall.graph);
+        var points = $('#walls-room-' + wall.roomId).attr('points');
+        var newPoint = wall.end.x + ',' + wall.end.y;
+
+        $('#walls-room-' + wall.roomId).attr('points', points + ' ' + newPoint);
       }
     }
   },
@@ -549,7 +559,18 @@ var editor = {
             sizeText[n].setAttributeNS(null, 'fill', '#666666');
             sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
 
-            $('#boxRib').append(sizeText[n]);
+            if (wall.roomId && !$('#ribs-room-' + wall.roomId).length) {
+              $('#boxRib').append(qSVG.create('ici', 'g', {
+                id: 'ribs-room-' + wall.roomId,
+                class: 'room-' + wall.roomId
+              }));
+            }
+      
+            if (wall.roomId) {
+              $('#ribs-room-' + wall.roomId).append(sizeText[n]);
+            } else {
+              $('#boxRib').append(sizeText[n]);
+            }
         }
       }
     }
@@ -585,6 +606,16 @@ var editor = {
             fill: cc[tt].fill,
             stroke: cc[tt].stroke,
             'stroke-dasharray': cc[tt].strokeDashArray
+        });
+      }
+      if (cc[tt].line) {
+        blank = qSVG.create('none', 'line', {
+          x1: cc[tt].x1,
+          y1: cc[tt].y1,
+          x2: cc[tt].x2,
+          y2: cc[tt].y2,
+          style: cc[tt].style,
+          'stroke-linecap': cc[tt].strokeLinecap
         });
       }
       if (cc[tt].text) {
@@ -760,11 +791,11 @@ var editor = {
         qSVG.create('boxRoom', 'path', {
               d: pathCreate,
               fill: 'url(#'+ROOM[rr].color+')',
-              'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
+              'fill-opacity': 0, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         qSVG.create('boxSurface', 'path', {
               d: pathCreate,
-              fill: '#fff', 'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
+              fill: '#2f3136', 'fill-opacity': 0.3, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         var centroid = qSVG.polygonVisualCenter(ROOM[rr]);
 

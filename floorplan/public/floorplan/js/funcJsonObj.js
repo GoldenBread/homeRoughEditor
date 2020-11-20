@@ -685,7 +685,7 @@ function exportOpenings(objects, sides) {
     return exportedObjects;
 }
 
-flag=false; //to check if the mouse is currently down
+flag = false; //to check if the mouse is currently down
 
 function pressDownRoom(e) {
     if (mode == 'edit_room_mode') {
@@ -708,7 +708,6 @@ function pressDownRoom(e) {
 
 function moveRoom(e) {
     if (mode == 'edit_room_mode') {
-        // var selectedRoom = ROOM[binder.id];
         var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
         if (flag) {
             for (var i = 0; i < els.length; i++) {
@@ -718,13 +717,6 @@ function moveRoom(e) {
                 els[i].setAttribute('transform', t);
             }
         }
-
-        // var objWall = editor.objFromWall(selectedRoom.walls[0]); // LIST OBJ ON EDGE
-        // svg.setAttributeNS(null, 'y', 20);
-        // selectedRoom.walls.shift();
-        // WALLS.shift();
-        // editor.wallsComputing(WALLS);
-        // console.log('moveRome');
     }
 }
 
@@ -735,7 +727,3 @@ function pressUpRoom() {
         //TODO TLE recréer la pièce
     }
 }
-
-// function moveWallsAndObjects(room) {
-//     room.coords.wall
-// }
