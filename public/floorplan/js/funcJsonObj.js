@@ -691,16 +691,16 @@ function pressDownRoom(e) {
     if (mode == 'edit_room_mode') {
         var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
         for (var i = 0; i < els.length; i++) {
-            flag=true;
-            x1=e.clientX;
-            y1=e.clientY;
-            var t=els[i].getAttribute('transform');
-            if(t){
-                var parts  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(t);
+            flag = true;
+            x1 = e.clientX;
+            y1 = e.clientY;
+            var t = els[i].getAttribute('transform');
+            if (t) {
+                var parts = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(t);
                 var firstX = parts[1], firstY = parts[2];
                 console.log('firstX:' + firstX + ' firstY:' + firstY);
-                x1=x1-firstX*1;
-                y1=y1-firstY*1;
+                x1 = x1 - firstX * 1;
+                y1 = y1 - firstY * 1;
             }
         }
     }
@@ -710,12 +710,12 @@ function moveRoom(e) {
     if (mode == 'edit_room_mode') {
         // var selectedRoom = ROOM[binder.id];
         var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
-        if(flag){
+        if (flag) {
             for (var i = 0; i < els.length; i++) {
-                x=e.clientX;
-                y=e.clientY;
-                t="translate("+(x-x1)+","+(y-y1)+")"
-                els[i].setAttribute('transform',t);
+                x = e.clientX;
+                y = e.clientY;
+                t = "translate(" + (x - x1) + "," + (y - y1) + ")"
+                els[i].setAttribute('transform', t);
             }
         }
 
