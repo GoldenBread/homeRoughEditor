@@ -1,41 +1,20 @@
-# homeRoughEditor Version 0.93
+# Introduction 
+TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-Help me to make this project an essential and free resource for all, so that any developer / integrator can propose to create **_plans for house_, _apartment_**, etc. online. **Full Javascript**, No external library without an old Jquery (only for Bootstrap), Boostrap 3 and FontAwesome. For cons, forgive me for my English, it is very rusty !!!
+# Getting Started
+TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
+1.	Installation process
+2.	Software dependencies
+3.	Latest releases
+4.	API references
 
-## Getting Started
+# Build and Test
+TODO: Describe and show how to build your code and run the tests. 
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+# Contribute
+TODO: Explain how other users and developers can contribute to make your code better. 
 
-### Installing
-
-You just have to copy the files into a directory and open the index.html file in your browser. Version 0.93 of homeRoughtEditor is operational from **Mozilla 39!**
-
-### See example
-[![homeRoughEditor](https://raw.githubusercontent.com/ekymoz/homeRoughEditor/master/test.jpg)](http://homerougheditor.zipl.io)
-
-## Running the tests
-
-Personally I only test all this with the mozilla debug console
-
-## TODO
-- Make TouchScreen functions for tablet (or smartphone, but too tiny screen i think...)
-- Make interoperability for browsers (actually good for Moz.)
-- Refine the CSS and buttons behavior
-- Refine the Historical system (use LocalStorage)
-- Complete the translation (i'm French) 
-- Make your own system/functions to export plan to any database 
-
-## Built With
-
-* [Atom.io](https://atom.io/) - My code editor. Simple and free.
-* [Bootstrap](getbootstrap.com/docs/3.3/) - Bootstrap, a sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](https://en.wikipedia.org/wiki/MIT_License) on Web file for details
-
-## Acknowledgments
-
-* [Grafikart](https://www.grafikart.fr/) for teaching me so much about javascript
-
-
+If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
+- [ASP.NET Core](https://github.com/aspnet/Home)
+- [Visual Studio Code](https://github.com/Microsoft/vscode)
+- [Chakra Core](https://github.com/Microsoft/ChakraCore)
