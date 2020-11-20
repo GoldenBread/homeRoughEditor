@@ -1,6 +1,6 @@
 var editor = {
 
-  wall: function(start, end, type, thick) {
+  wall: function(start, end, type, thick, roomShape, roomId) {
       this.thick = thick;
       this.start = start;
       this.end = end;
@@ -11,6 +11,8 @@ var editor = {
       this.equations = {};
       this.coords = [];
       this.backUp = false;
+      this.roomShape = roomShape;
+      this.roomId = roomId;
   },
 
   // RETURN OBJECTS ARRAY INDEX OF WALLS [WALL1, WALL2, n...] WALLS WITH THIS NODE, EXCEPT PARAM = OBJECT WALL
@@ -32,11 +34,11 @@ var editor = {
 
   wallsComputing: function(WALLS, action = false) {
     // IF ACTION == MOVE -> equation2 exist !!!!!
-    if (action != 'move') {
+    // if (action != 'move') {
       $('#boxwall').empty();
-    } else {
-      $('#boxwall').children().addClass('wall-to-remove');
-    }
+    // } else {
+    //   $('#boxwall').children().addClass('wall-to-remove');
+    // }
     $('#boxArea').empty();
 
     for (var vertice = 0; vertice < WALLS.length; vertice++) {
@@ -69,7 +71,7 @@ var editor = {
         }
         else {
           var S = editor.getWallNode(wall.start, wall);
-           if (wallInhibation && isObjectsEquals(wall, wallInhibation)) S = false;
+          //  if (wallInhibation && isObjectsEquals(wall, wallInhibation)) S = false;
           for (var k in S) {
             var eqInter = editor.createEquationFromWall(S[k].wall);
             var angleInter = 90; // TO PASS TEST
@@ -225,7 +227,18 @@ var editor = {
       }
 
       wall.graph = editor.makeWall(dWay);
-      $('#boxwall').append(wall.graph);
+      if (wall.roomId && !$('#walls-room-' + wall.roomId).length) {
+        $('#boxwall').append(qSVG.create('ici', 'g', {
+          id: 'walls-room-' + wall.roomId,
+          class: 'room-' + wall.roomId
+        }));
+      }
+
+      if (wall.roomId) {
+        $('#walls-room-' + wall.roomId).append(wall.graph);
+      } else {
+        $('#boxwall').append(wall.graph);
+      }
     }
   },
 
@@ -426,7 +439,9 @@ var editor = {
       if (OBJDATA[scan].family == 'inWall') {
         var eq = qSVG.createEquation(wall.start.x, wall.start.y,wall.end.x,wall.end.y);
         search = qSVG.nearPointOnEquation(eq, OBJDATA[scan]);
-        if (search.distance < 0.01 && qSVG.btwn(OBJDATA[scan].x, wall.start.x, wall.end.x) && qSVG.btwn(OBJDATA[scan].y, wall.start.y, wall.end.y)) objList.push(OBJDATA[scan]);
+        if (search.distance < 1.0 && qSVG.btwn(OBJDATA[scan].x, wall.start.x, wall.end.x) && qSVG.btwn(OBJDATA[scan].y, wall.start.y, wall.end.y)) {
+          objList.push(OBJDATA[scan]);
+        }
         // WARNING 0.01 TO NO COUNT OBJECT ON LIMITS OF THE EDGE !!!!!!!!!!!! UGLY CODE( MOUSE PRECISION)
         // TRY WITH ANGLE MAYBE ???
       }
@@ -449,13 +464,14 @@ var editor = {
       if (qSVG.rayCasting(snap, polygon, rayCastingSensibility)) {
         wallList.push(WALLS[i]); // Return EDGES Index
       }
-      }
-      if (wallList.length == 0) return false;
-      else {
-        if (wallList.length == 1) return wallList[0];
-        else return wallList;
-      }
-    },
+    }
+    if (wallList.length == 0) {
+      return false;
+    } else {
+      if (wallList.length == 1) return wallList[0];
+      else return wallList;
+    }
+  },
 
   inWallRib2: function(wall, option = false) {
     if (!option) $('#boxRib').empty();
@@ -600,7 +616,6 @@ var editor = {
 
 
       this.update = function() {
-        console.log("update")
         this.width = (this.size / meter).toFixed(2);
         this.height= (this.thick / meter).toFixed(2);
         cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
@@ -684,7 +699,7 @@ var editor = {
         }
       }
       if (!foundRoom) {
-          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add'});
+          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add', roomShape: Rooms.polygons[pp].roomShape});
       }
     }
 
@@ -745,11 +760,11 @@ var editor = {
         qSVG.create('boxRoom', 'path', {
               d: pathCreate,
               fill: 'url(#'+ROOM[rr].color+')',
-              'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room'});
+              'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         qSVG.create('boxSurface', 'path', {
               d: pathCreate,
-              fill: '#fff', 'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room'});
+              fill: '#fff', 'fill-opacity': 1, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         var centroid = qSVG.polygonVisualCenter(ROOM[rr]);
 
