@@ -666,48 +666,51 @@ var editor = {
         this.height= (this.thick / meter).toFixed(2);
         cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
         for (var tt = 0; tt < cc.length; tt++) {
-            if (cc[tt].path)  {
-              this.graph.find('path')[tt].setAttribute("d", cc[tt].path);
-            }
-            else {
-              // this.graph.find('text').context.textContent = cc[tt].text;
-            }
+          if (cc[tt].path)  {
+            this.graph.find('path')[tt].setAttribute("d", cc[tt].path);
           }
-          var hingeStatus = this.hinge; // normal - reverse
-          var hingeUpdate;
-          if (hingeStatus == 'normal') hingeUpdate = 1;
-          else hingeUpdate = -1;
-          this.graph.attr({"transform": "translate(" + (this.x) + "," + (this.y) + ") scale("+hingeUpdate+", 1)"});
-          this.graph.children().each((index, child) => {
-            if (child.tagName != 'image') {
-              child.setAttribute("transform", "rotate(" +this.angle+ ",0,0)");
-            }
-          });
-          var bbox = this.graph.get(0).getBoundingClientRect();
-          bbox.x = (bbox.x * factor) - (offset.left * factor) + originX_viewbox;
-          bbox.y = (bbox.y * factor) - (offset.top * factor) + originY_viewbox;
-          bbox.origin = {x: this.x, y: this.y};
-          this.bbox = bbox;
-
-          if (this.class == "text" && this.angle == 0){ this.realBbox = [
-            {x: this.bbox.x, y: this.bbox.y}, {x: this.bbox.x+this.bbox.width, y: this.bbox.y},{x: this.bbox.x+this.bbox.width, y: this.bbox.y+this.bbox.height}, {x: this.bbox.x, y: this.bbox.y+this.bbox.height}];
-            this.size = this.bbox.width;
-            this.thick = this.bbox.height;
+          else if (cc[tt].x1 && cc[tt].y1 && cc[tt].x2 && cc[tt].y2) {
+            this.graph.find('line')[tt].setAttribute("x1", cc[tt].x1);
+            this.graph.find('line')[tt].setAttribute("y1", cc[tt].y1);
+            this.graph.find('line')[tt].setAttribute("x2", cc[tt].x2);
+            this.graph.find('line')[tt].setAttribute("y2", cc[tt].y2);
           }
+        }
+        var hingeStatus = this.hinge; // normal - reverse
+        var hingeUpdate;
+        if (hingeStatus == 'normal') hingeUpdate = 1;
+        else hingeUpdate = -1;
+        this.graph.attr({"transform": "translate(" + (this.x) + "," + (this.y) + ") scale("+hingeUpdate+", 1)"});
+        this.graph.children().each((index, child) => {
+          if (child.tagName != 'image') {
+            child.setAttribute("transform", "rotate(" +this.angle+ ",0,0)");
+          }
+        });
+        var bbox = this.graph.get(0).getBoundingClientRect();
+        bbox.x = (bbox.x * factor) - (offset.left * factor) + originX_viewbox;
+        bbox.y = (bbox.y * factor) - (offset.top * factor) + originY_viewbox;
+        bbox.origin = {x: this.x, y: this.y};
+        this.bbox = bbox;
 
-            var angleRadian = -(this.angle) * (Math.PI / 180);
-            this.realBbox = [{x: -this.size/2, y: -this.thick/2}, {x: this.size/2, y: -this.thick/2},{x: this.size/2, y: this.thick/2},{x: -this.size/2, y: this.thick/2}];
-            var newRealBbox = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
-              newRealBbox[0].x = (this.realBbox[0].y*Math.sin(angleRadian) + this.realBbox[0].x*Math.cos(angleRadian))+this.x;
-              newRealBbox[1].x = (this.realBbox[1].y*Math.sin(angleRadian) + this.realBbox[1].x*Math.cos(angleRadian))+this.x;
-              newRealBbox[2].x = (this.realBbox[2].y*Math.sin(angleRadian) + this.realBbox[2].x*Math.cos(angleRadian))+this.x;
-              newRealBbox[3].x = (this.realBbox[3].y*Math.sin(angleRadian) + this.realBbox[3].x*Math.cos(angleRadian))+this.x;
-              newRealBbox[0].y = (this.realBbox[0].y*Math.cos(angleRadian) - this.realBbox[0].x*Math.sin(angleRadian))+this.y;
-              newRealBbox[1].y = (this.realBbox[1].y*Math.cos(angleRadian) - this.realBbox[1].x*Math.sin(angleRadian))+this.y;
-              newRealBbox[2].y = (this.realBbox[2].y*Math.cos(angleRadian) - this.realBbox[2].x*Math.sin(angleRadian))+this.y;
-              newRealBbox[3].y = (this.realBbox[3].y*Math.cos(angleRadian) - this.realBbox[3].x*Math.sin(angleRadian))+this.y;
-            this.realBbox = newRealBbox;
-          return true;
+        if (this.class == "text" && this.angle == 0){ this.realBbox = [
+          {x: this.bbox.x, y: this.bbox.y}, {x: this.bbox.x+this.bbox.width, y: this.bbox.y},{x: this.bbox.x+this.bbox.width, y: this.bbox.y+this.bbox.height}, {x: this.bbox.x, y: this.bbox.y+this.bbox.height}];
+          this.size = this.bbox.width;
+          this.thick = this.bbox.height;
+        }
+
+        var angleRadian = -(this.angle) * (Math.PI / 180);
+        this.realBbox = [{x: -this.size/2, y: -this.thick/2}, {x: this.size/2, y: -this.thick/2},{x: this.size/2, y: this.thick/2},{x: -this.size/2, y: this.thick/2}];
+        var newRealBbox = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+        newRealBbox[0].x = (this.realBbox[0].y*Math.sin(angleRadian) + this.realBbox[0].x*Math.cos(angleRadian))+this.x;
+        newRealBbox[1].x = (this.realBbox[1].y*Math.sin(angleRadian) + this.realBbox[1].x*Math.cos(angleRadian))+this.x;
+        newRealBbox[2].x = (this.realBbox[2].y*Math.sin(angleRadian) + this.realBbox[2].x*Math.cos(angleRadian))+this.x;
+        newRealBbox[3].x = (this.realBbox[3].y*Math.sin(angleRadian) + this.realBbox[3].x*Math.cos(angleRadian))+this.x;
+        newRealBbox[0].y = (this.realBbox[0].y*Math.cos(angleRadian) - this.realBbox[0].x*Math.sin(angleRadian))+this.y;
+        newRealBbox[1].y = (this.realBbox[1].y*Math.cos(angleRadian) - this.realBbox[1].x*Math.sin(angleRadian))+this.y;
+        newRealBbox[2].y = (this.realBbox[2].y*Math.cos(angleRadian) - this.realBbox[2].x*Math.sin(angleRadian))+this.y;
+        newRealBbox[3].y = (this.realBbox[3].y*Math.cos(angleRadian) - this.realBbox[3].x*Math.sin(angleRadian))+this.y;
+        this.realBbox = newRealBbox;
+        return true;
       }
   },
 

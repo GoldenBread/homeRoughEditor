@@ -1303,15 +1303,15 @@ function rib(shift = 5) {
             sizeText[n].setAttributeNS(null, 'fill', '#555555');
             sizeText[n].setAttribute("transform", "rotate("+angleText+" "+startText.x+","+(startText.y)+")");
 
-            if (wall.roomId && !$('#ribs-room-' + wall.roomId).length) {
+            if (WALLS[ribMaster[t][a][n].wallIndex].roomId && !$('#ribs-room-' + WALLS[ribMaster[t][a][n].wallIndex].roomId).length) {
               $('#boxRib').append(qSVG.create('ici', 'g', {
-                id: 'ribs-room-' + wall.roomId,
-                class: 'room-' + wall.roomId
+                id: 'ribs-room-' + WALLS[ribMaster[t][a][n].wallIndex].roomId,
+                class: 'room-' + WALLS[ribMaster[t][a][n].wallIndex].roomId
               }));
             }
       
-            if (wall.roomId) {
-              $('#ribs-room-' + wall.roomId).append(sizeText[n]);
+            if (WALLS[ribMaster[t][a][n].wallIndex].roomId) {
+              $('#ribs-room-' + WALLS[ribMaster[t][a][n].wallIndex].roomId).append(sizeText[n]);
             } else {
               $('#boxRib').append(sizeText[n]);
             }
