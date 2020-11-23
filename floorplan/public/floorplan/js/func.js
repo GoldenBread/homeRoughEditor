@@ -38,6 +38,7 @@ var zoom = 9;
 var factor = 1;
 var scaling = false;
 rayCastingSensibility = 50;
+var picto_size = 20;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
@@ -1549,8 +1550,9 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
     if (typeObj == 'aperture') {
       // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(255, 255, 255);stroke-width:13" stroke-linecap="round" />
       // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(66, 68, 72);stroke-width:10" stroke-linecap="round" />
-      construc.push({'line': true, 'x1': (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
-      construc.push({'line': true, 'x1': (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/door_picto.svg"});
       // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#ccc", 'stroke': "#494646", 'strokeDashArray': '5,5'});
       // construc.push({'path':"M "+(-sizeObj/2)+","+(-(thickObj/2))+" L "+(-sizeObj/2)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
       // construc.push({'path':"M "+((sizeObj/2)-5)+","+(-(thickObj/2))+" L "+((sizeObj/2)-5)+","+thickObj/2+" L "+(sizeObj/2)+","+thickObj/2+" L "+(sizeObj/2)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
@@ -1558,8 +1560,11 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
       construc.params.resizeLimit.width = {min:40, max:500};
     }
     if (typeObj == 'fix') {
-      construc.push({'path':"M "+(-sizeObj/2)+",-2 L "+(-sizeObj/2)+",2 L "+sizeObj/2+",2 L "+sizeObj/2+",-2 Z", 'fill': "#ccc", 'stroke': "none", 'strokeDashArray': ''});
-      construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" M "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2), 'fill': "none", 'stroke': "#ccc", 'strokeDashArray': ''});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/windows_picto.svg"});
+      // construc.push({'path':"M "+(-sizeObj/2)+",-2 L "+(-sizeObj/2)+",2 L "+sizeObj/2+",2 L "+sizeObj/2+",-2 Z", 'fill': "#ccc", 'stroke': "none", 'strokeDashArray': ''});
+      // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" M "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2), 'fill': "none", 'stroke': "#ccc", 'strokeDashArray': ''});
       construc.params.resize = true;
       construc.params.resizeLimit.width = {min:30, max:300};
     }

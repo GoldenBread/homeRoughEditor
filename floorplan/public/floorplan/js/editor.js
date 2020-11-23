@@ -596,7 +596,7 @@ var editor = {
     this.height= (this.thick / meter).toFixed(2);
 
     var cc = carpentryCalc(classe, type, size, thick, value);
-    var blank;
+    var blank, picto;
 
     for (var tt = 0; tt < cc.length; tt++) {
       if (cc[tt].path) {
@@ -607,6 +607,21 @@ var editor = {
             stroke: cc[tt].stroke,
             'stroke-dasharray': cc[tt].strokeDashArray
         });
+      }
+      if (cc[tt].picto) {
+        blank = qSVG.create('none', 'image', {
+          x: cc[tt].x,
+          y: cc[tt].y,
+          width: cc[tt].width,
+          height: cc[tt].height,
+          href: cc[tt].href
+        });
+
+        // blank.setAttribute('x','0');
+        // blank.setAttribute('y','0');
+        // blank.setAttribute('height','60');
+        // blank.setAttribute('width','60');
+        // blank.setAttributeNS('http://www.w3.org/1999/xlink','href','door_picto.svg');
       }
       if (cc[tt].line) {
         blank = qSVG.create('none', 'line', {
@@ -662,7 +677,12 @@ var editor = {
           var hingeUpdate;
           if (hingeStatus == 'normal') hingeUpdate = 1;
           else hingeUpdate = -1;
-          this.graph.attr({"transform": "translate(" + (this.x) + "," + (this.y) + ") rotate(" +this.angle+ ",0,0) scale("+hingeUpdate+", 1)"});
+          this.graph.attr({"transform": "translate(" + (this.x) + "," + (this.y) + ") scale("+hingeUpdate+", 1)"});
+          this.graph.children().each((index, child) => {
+            if (child.tagName != 'image') {
+              child.setAttribute("transform", "rotate(" +this.angle+ ",0,0)");
+            }
+          });
           var bbox = this.graph.get(0).getBoundingClientRect();
           bbox.x = (bbox.x * factor) - (offset.left * factor) + originX_viewbox;
           bbox.y = (bbox.y * factor) - (offset.top * factor) + originY_viewbox;
