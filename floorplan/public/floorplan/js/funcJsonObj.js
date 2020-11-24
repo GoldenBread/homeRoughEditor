@@ -99,7 +99,7 @@ function createRectangleShapeRoom(room) {
         ["left", [points[3], points[0]]]
     ]);
 
-    translation(points, room.center);
+    translationByMeanPoint(points, room.center);
 
     points.forEach(point => point = convertToCoordinates(point));
 
@@ -144,7 +144,7 @@ function createOpenRectangleShapeRoom(room) {//TLE TODO FAIRE EN SORTE QUE CE SO
         ["left", [points[3], points[0]]]
     ]);
 
-    translation(points, room.center);
+    translationByMeanPoint(points, room.center);
 
     points.forEach(point => point = convertToCoordinates(point));
 
@@ -207,7 +207,7 @@ function createDiamondShapeRoom(room) {
     rotation(points, angleShape.get(room.shape));
 
     //move points to correct location
-    translation(points, room.center);
+    translationByMeanPoint(points, room.center);
 
     //convert meter to svg coordinates
     points.forEach(point => point = convertToCoordinates(point));
@@ -285,7 +285,7 @@ function createFlyingWingShapeRoom(room) {
 
     rotation(points, angleShape.get(room.shape));
 
-    translation(points, room.center);
+    translationByMeanPoint(points, room.center);
 
     points.forEach(point => point = convertToCoordinates(point));
 
@@ -395,7 +395,7 @@ function rotation(points, degrees) {
     });
 }
 
-function translation(points, destinationPoint, opposite) {
+function translationByMeanPoint(points, destinationPoint, opposite) {
     var mp = meanPoint(points);
 
     points.forEach(point => {
@@ -409,6 +409,14 @@ function translation(points, destinationPoint, opposite) {
         point.x = newPoints.x;
         point.y = newPoints.y;
     });
+}
+
+function translation(point, vector) {
+    var newPoints = {
+        x: point.x + vector.x,
+        y: point.y + vector.y
+    };
+    return newPoints;
 }
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
@@ -485,7 +493,7 @@ function exportRectangleShapeRoom(room) {
 
     var mp = meanPoint(points);
 
-    translation(points, mp, true);
+    translationByMeanPoint(points, mp, true);
 
     var widthDistance, heightDistance;
     widthDistance = distanceBetweenPoints(sides.get("top")[0], sides.get("top")[1]);
@@ -525,7 +533,7 @@ function exportOpenRectangleShapeRoom(room) {
 
     var mp = meanPoint(points);
 
-    translation(points, mp, true);
+    translationByMeanPoint(points, mp, true);
 
     var widthDistance, heightDistance;
     widthDistance = distanceBetweenPoints(sides.get("top")[0], sides.get("top")[1]);
@@ -577,7 +585,7 @@ function exportDiamondShapeRoom(room) {
 
     var mp = meanPoint(points);
 
-    translation(points, mp, true);
+    translationByMeanPoint(points, mp, true);
 
     var tableDistance, left_crownDistance, right_crownDistance;
     tableDistance = distanceBetweenPoints(sides.get("table")[0], sides.get("table")[1]);
@@ -632,7 +640,7 @@ function exportFlyingWingShapeRoom(room) {
 
     var mp = meanPoint(points);
 
-    translation(points, mp, true);
+    translationByMeanPoint(points, mp, true);
 
     var right_wingtipDistance, right_trailing_edgeDistance, left_trailing_edgeDistance, left_wingtipDistance;
     right_wingtipDistance = distanceBetweenPoints(sides.get("right_wingtip")[0], sides.get("right_wingtip")[1]);
@@ -686,34 +694,45 @@ function exportOpenings(objects, sides) {
 }
 
 flag = false; //to check if the mouse is currently down
+var refreshedTranslatedCoordinates;//for elements rewrited on mouseup. Needs initial translation to be set to 0;
+var x2, y2;
 
 function pressDownRoom(e) {
     if (mode == 'edit_room_mode') {
-        var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
+        var els = document.getElementsByClassName('room-' + ROOM[binder.id].roomId);
         for (var i = 0; i < els.length; i++) {
             flag = true;
             x1 = e.clientX;
+            x2 = e.clientX;
             y1 = e.clientY;
+            y2 = e.clientY;
             var t = els[i].getAttribute('transform');
             if (t) {
                 var parts = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(t);
                 var firstX = parts[1], firstY = parts[2];
                 console.log('firstX:' + firstX + ' firstY:' + firstY);
-                x1 = x1 - firstX * 1;
-                y1 = y1 - firstY * 1;
+                x2 = e.clientX - firstX * 1;
+                y2 = e.clientY - firstY * 1;
             }
         }
     }
 }
 
+var numbersRegex = /-?\d+\.?\d*/g;
+
 function moveRoom(e) {
-    if (mode == 'edit_room_mode') {
-        var els = document.getElementsByClassName('room-' + ROOM[binder.id].walls[0].roomId);
+    if (mode == 'edit_room_mode' && ROOM[binder.id].walls) {
+        var els = document.getElementsByClassName('room-' + ROOM[binder.id].roomId);
         if (flag) {
             for (var i = 0; i < els.length; i++) {
                 x = e.clientX;
                 y = e.clientY;
-                t = "translate(" + (x - x1) + "," + (y - y1) + ")"
+                if ((els[i].id == 'roomSelected' || els[i].id == 'ribs-room-' + ROOM[binder.id].roomId) && els[i].getAttribute('transform')) {
+                    t = "translate(" + (x - x2) + "," + (y - y2) + ")";
+                } else {
+                    t = "translate(" + (x - x1) + "," + (y - y1) + ")";
+                }
+                
                 els[i].setAttribute('transform', t);
             }
         }
@@ -723,7 +742,48 @@ function moveRoom(e) {
 function pressUpRoom() {
     if (mode == 'edit_room_mode') {
         flag = false;
+        
+        var roomWalls = document.getElementById('walls-room-' + ROOM[binder.id].roomId)
+        var rawVector = roomWalls.getAttribute('transform').match(numbersRegex);
+
+        var vector = {
+            x: Number(rawVector[0]),
+            y: Number(rawVector[1])
+        }
+
+        ROOM[binder.id].walls.forEach(wall => {
+            editor.objFromWall(wall).forEach(obj => {
+                newCoordinates = translation(obj, vector);
+                obj.x = newCoordinates.x;
+                obj.y = newCoordinates.y;
+            });
+            wall.start = translation(wall.start, vector);
+            wall.end = translation(wall.end, vector);
+        });
+
+        var els = document.getElementsByClassName('room-' + ROOM[binder.id].roomId);
+
+        // translation(ROOM[binder.id].coords, vector);
+
+        editor.architect(WALLS);
+        for (var i = 0; i < els.length; i++) {
+            if (els[i].id.startsWith('openings-room-')) {
+                els[i].removeAttribute('transform');
+                Array.from(els[i].children).forEach(child => {
+                    var currentPos = child.getAttribute('transform').match(numbersRegex).map(numberStr => Number(numberStr));
+                    child.setAttribute('transform', 'translate(' + (currentPos[0] + vector.x) + ',' + (currentPos[1] + vector.y) + ') scale(1, 1)')
+                });
+            }
+        }
 
         //TODO TLE recréer la pièce
+
+
+        // Array.from(els[i].children).forEach(child => {
+        //     var currentPos = child.getAttribute('transform').match(numbersRegex).map(numberStr => Number(numberStr));
+
+        //     child.setAttribute('transform', 'translate(' + (currentPos[0] + (x - x1)) + ',' + (currentPos[1] + (y - y1)) + ') scale(1, 1)')
+        // });
+
     }
 }

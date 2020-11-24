@@ -456,17 +456,17 @@ var qSVG = {
 
                 if (WALLS[i].end.x == WALLS[v].start.x && WALLS[i].end.y == WALLS[v].start.y || WALLS[i].start.x == WALLS[v].end.x && WALLS[i].start.y == WALLS[v].end.y) {
                   if (WALLS[i].end.x == WALLS[v].start.x && WALLS[i].end.y == WALLS[v].start.y) {
-                    junction.push({segment:i, child: v, values: [WALLS[v].start.x, WALLS[v].start.y], type: "natural", roomShape: WALLS[v].roomShape});
+                    junction.push({segment:i, child: v, values: [WALLS[v].start.x, WALLS[v].start.y], type: "natural", roomShape: WALLS[v].roomShape, roomId: WALLS[v].roomId});
                   }
                   if (WALLS[i].start.x == WALLS[v].end.x && WALLS[i].start.y == WALLS[v].end.y) {
-                    junction.push({segment:i, child: v, values: [WALLS[i].start.x, WALLS[i].start.y], type: "natural", roomShape: WALLS[v].roomShape});
+                    junction.push({segment:i, child: v, values: [WALLS[i].start.x, WALLS[i].start.y], type: "natural", roomShape: WALLS[v].roomShape, roomId: WALLS[v].roomId});
                   }
                 }
                 else {
                   if (qSVG.btwn(intersec[0], WALLS[i].start.x, WALLS[i].end.x, 'round') && qSVG.btwn(intersec[1], WALLS[i].start.y, WALLS[i].end.y, 'round') && qSVG.btwn(intersec[0], WALLS[v].start.x, WALLS[v].end.x, 'round') && qSVG.btwn(intersec[1], WALLS[v].start.y, WALLS[v].end.y, 'round')) {
                     intersec[0] = intersec[0];
                     intersec[1] = intersec[1];
-                    junction.push({segment:i, child: v, values: [intersec[0], intersec[1]], type: "intersection", roomShape: WALLS[i].roomShape});
+                    junction.push({segment:i, child: v, values: [intersec[0], intersec[1]], type: "intersection", roomShape: WALLS[i].roomShape, roomId: WALLS[v].roomId});
                   }
                 }
             }
@@ -474,10 +474,10 @@ var qSVG = {
           if ((Math.abs(equation1.A) == Math.abs(equation2.A) || equation1.A == equation2.A) && equation1.B == equation2.B) {
 
             if (WALLS[i].end.x == WALLS[v].start.x && WALLS[i].end.y == WALLS[v].start.y) {
-              junction.push({segment:i, child: v, values: [WALLS[v].start.x, WALLS[v].start.y], type: "natural", roomShape: WALLS[v].roomShape});
+              junction.push({segment:i, child: v, values: [WALLS[v].start.x, WALLS[v].start.y], type: "natural", roomShape: WALLS[v].roomShape, roomId: WALLS[v].roomId});
             }
             if (WALLS[i].start.x == WALLS[v].end.x && WALLS[i].start.y == WALLS[v].end.y) {
-              junction.push({segment:i, child: v, values: [WALLS[i].start.x, WALLS[i].start.y], type: "natural", roomShape: WALLS[i].roomShape});
+              junction.push({segment:i, child: v, values: [WALLS[i].start.x, WALLS[i].start.y], type: "natural", roomShape: WALLS[i].roomShape, roomId: WALLS[v].roomId});
             }
             }
           }
@@ -502,7 +502,7 @@ var qSVG = {
           }
         }
         if (found) {
-          vertex.push({x: junction[jj].values[0], y: junction[jj].values[1], segment: [junction[jj].segment], bypass:0, type: junction[jj].type, roomShape: junction[jj].roomShape});//TLE removed math.round
+          vertex.push({x: junction[jj].values[0], y: junction[jj].values[1], segment: [junction[jj].segment], bypass:0, type: junction[jj].type, roomShape: junction[jj].roomShape, roomId: junction[jj].roomId});//TLE removed math.round
         }
       }
 
@@ -740,10 +740,10 @@ var qSVG = {
                 }
                 // WARNING -> FAKE
                 if (realCoords.inside.length != realCoords.outside) {
-                  polygons.push({way: tempSurface, coords: coords, coordsOutside: realCoords.outside, coordsInside: realCoords.inside, area: realArea, outsideArea: outsideArea, realArea: bestArea, roomShape: vertex[bestVertex].roomShape});
+                  polygons.push({way: tempSurface, coords: coords, coordsOutside: realCoords.outside, coordsInside: realCoords.inside, area: realArea, outsideArea: outsideArea, realArea: bestArea, roomShape: vertex[bestVertex].roomShape, roomId: vertex[bestVertex].roomId});
                 }
                 else { // REAL INSIDE POLYGONE -> ROOM
-                  polygons.push({way: tempSurface, coords: realCoords.inside, coordsOutside: realCoords.outside, area: realArea, outsideArea: outsideArea, realArea: bestArea, roomShape: vertex[bestVertex].roomShape});
+                  polygons.push({way: tempSurface, coords: realCoords.inside, coordsOutside: realCoords.outside, area: realArea, outsideArea: outsideArea, realArea: bestArea, roomShape: vertex[bestVertex].roomShape, roomId: vertex[bestVertex].roomId});
                 }
 
                 // REMOVE FIRST POINT OF WAY ON CHILDS FIRST VERTEX

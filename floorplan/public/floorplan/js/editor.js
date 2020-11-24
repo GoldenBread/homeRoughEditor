@@ -753,7 +753,7 @@ var editor = {
         }
       }
       if (!foundRoom) {
-          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add', roomShape: Rooms.polygons[pp].roomShape});
+          ROOM.push({coords: Rooms.polygons[pp].coords, coordsOutside : Rooms.polygons[pp].coordsOutside, coordsInside : Rooms.polygons[pp].coordsInside, inside: Rooms.polygons[pp].inside, way: Rooms.polygons[pp].way, area: Rooms.polygons[pp].area, surface: '', name: '', color: 'gradientWhite', showSurface: true, action: 'add', roomShape: Rooms.polygons[pp].roomShape, roomId: Rooms.polygons[pp].roomId});
       }
     }
 
@@ -783,13 +783,16 @@ var editor = {
         else found = false;
       }
       if (!found) toSplice.push(rr);
+      if (!ROOM[rr].walls) {
+        ROOM[rr].walls = WALLS.filter(x => x.roomId == ROOM[rr].roomId);
+      }
     }
 
     toSplice.sort(function(a, b) {
         return b-a;
       });
     for (var ss = 0; ss < toSplice.length; ss++) {
-     ROOM.splice(toSplice[ss], 1);
+      ROOM.splice(toSplice[ss], 1);
     }
     $('#boxRoom').empty();
     $('#boxSurface').empty();
@@ -814,11 +817,13 @@ var editor = {
         qSVG.create('boxRoom', 'path', {
               d: pathCreate,
               fill: 'url(#'+ROOM[rr].color+')',
-              'fill-opacity': 0, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
+              'fill-opacity': 0, stroke: 'none', 'fill-rule': 'evenodd', class: 'room-' + ROOM[rr].roomId});
+              // 'fill-opacity': 0, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         qSVG.create('boxSurface', 'path', {
               d: pathCreate,
-              fill: '#2f3136', 'fill-opacity': 0.3, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
+              fill: '#2f3136', 'fill-opacity': 0.3, stroke: 'none', 'fill-rule': 'evenodd', class: 'room-' + ROOM[rr].roomId});
+              // fill: '#2f3136', 'fill-opacity': 0.3, stroke: 'none', 'fill-rule': 'evenodd', class: 'room' + (ROOM[rr].walls !== undefined ? ' room-' + ROOM[rr].walls[0].roomId : '')});
 
         var centroid = qSVG.polygonVisualCenter(ROOM[rr]);
 
