@@ -411,10 +411,13 @@ function translationByMeanPoint(points, destinationPoint, opposite) {
     });
 }
 
-function translation(point, vector) {
-    var newPoints = {
+function translation(point, vector, opposite) {
+    var newPoints = !opposite ? {
         x: point.x + vector.x,
         y: point.y + vector.y
+    } : {
+        x: point.x - vector.x,
+        y: point.y - vector.y
     };
     return newPoints;
 }
@@ -756,6 +759,12 @@ function pressUpRoom() {
                 newCoordinates = translation(obj, vector);
                 obj.x = newCoordinates.x;
                 obj.y = newCoordinates.y;
+                var limits = limitObj(wall.equations.base, binder.size, ROOM[binder.id]);
+                var angleWall = qSVG.angleDeg(wall.start.x, wall.start.y, wall.end.x, wall.end.y);
+                obj.angle = angleWall;
+                obj.limit = limits;
+                obj.update();
+
             });
             wall.start = translation(wall.start, vector);
             wall.end = translation(wall.end, vector);
@@ -763,16 +772,10 @@ function pressUpRoom() {
 
         var els = document.getElementsByClassName('room-' + ROOM[binder.id].roomId);
 
-        // translation(ROOM[binder.id].coords, vector);
-
         editor.architect(WALLS);
         for (var i = 0; i < els.length; i++) {
             if (els[i].id.startsWith('openings-room-')) {
                 els[i].removeAttribute('transform');
-                Array.from(els[i].children).forEach(child => {
-                    var currentPos = child.getAttribute('transform').match(numbersRegex).map(numberStr => Number(numberStr));
-                    child.setAttribute('transform', 'translate(' + (currentPos[0] + vector.x) + ',' + (currentPos[1] + vector.y) + ') scale(1, 1)')
-                });
             }
         }
 
