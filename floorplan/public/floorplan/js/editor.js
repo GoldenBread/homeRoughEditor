@@ -581,6 +581,10 @@ var editor = {
     this.family = family   // inWall, stick, collision, free
     this.class = classe;  // door, window, energy, stair, measure, text ?
     this.type = type; // simple, double, simpleSlide, aperture, doubleSlide, fixed, switch, lamp....
+    if (classe == 'socle') {
+      this.type = pos.type;
+      type = pos.type;
+    }
     this.x = pos.x;
     this.y = pos.y;
     this.angle = angle;
@@ -616,12 +620,6 @@ var editor = {
           height: cc[tt].height,
           href: cc[tt].href
         });
-
-        // blank.setAttribute('x','0');
-        // blank.setAttribute('y','0');
-        // blank.setAttribute('height','60');
-        // blank.setAttribute('width','60');
-        // blank.setAttributeNS('http://www.w3.org/1999/xlink','href','door_picto.svg');
       }
       if (cc[tt].line) {
         blank = qSVG.create('none', 'line', {
@@ -631,6 +629,15 @@ var editor = {
           y2: cc[tt].y2,
           style: cc[tt].style,
           'stroke-linecap': cc[tt].strokeLinecap
+        });
+      }
+      if (cc[tt].circle) {
+        blank = qSVG.create('none', 'circle', {
+          cx: cc[tt].cx,
+          cy: cc[tt].cy,
+          r: cc[tt].r,
+          fill: cc[tt].fill,
+          style: cc[tt].style
         });
       }
       if (cc[tt].text) {
@@ -665,15 +672,17 @@ var editor = {
         this.width = (this.size / meter).toFixed(2);
         this.height= (this.thick / meter).toFixed(2);
         cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
+        var ti = 0;
         for (var tt = 0; tt < cc.length; tt++) {
           if (cc[tt].path)  {
             this.graph.find('path')[tt].setAttribute("d", cc[tt].path);
           }
-          else if (cc[tt].x1 && cc[tt].y1 && cc[tt].x2 && cc[tt].y2) {
-            this.graph.find('line')[tt].setAttribute("x1", cc[tt].x1);
-            this.graph.find('line')[tt].setAttribute("y1", cc[tt].y1);
-            this.graph.find('line')[tt].setAttribute("x2", cc[tt].x2);
-            this.graph.find('line')[tt].setAttribute("y2", cc[tt].y2);
+          else if (cc[tt].x1 && cc[tt].y1 && cc[tt].x2 && cc[tt].y2 && this.graph.find('line').length > ti) {
+            this.graph.find('line')[ti].setAttribute("x1", cc[tt].x1);
+            this.graph.find('line')[ti].setAttribute("y1", cc[tt].y1);
+            this.graph.find('line')[ti].setAttribute("x2", cc[tt].x2);
+            this.graph.find('line')[ti].setAttribute("y2", cc[tt].y2);
+            ti++;
           }
         }
         var hingeStatus = this.hinge; // normal - reverse
@@ -841,7 +850,7 @@ var editor = {
           area = ROOM[rr].surface+' m²';
         }
         if (ROOM[rr].color == 'gradientBlack' || ROOM[rr].color == 'gradientBlue') styled.color = 'white';
-        if (ROOM[rr].showSurface) qSVG.textOnDiv(area, centroid, styled, 'boxArea');
+        if (ROOM[rr].showSurface) qSVG.textOnDiv(area, centroid, styled, 'boxArea', ROOM[rr].roomId);
     }
     if (globalArea <= 0) {
       globalArea = 0;

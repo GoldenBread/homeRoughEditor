@@ -238,7 +238,7 @@ function _MOUSEMOVE(event) {
     snap = calcul_snap(event, grid_snap);
     var roomTarget;
     if (roomTarget = editor.rayCastingRoom(snap)) {
-      if (typeof(binder) != 'undefined') {
+      if (typeof(binder) != 'undefined' && binder.id == 'roomSelected') {
         binder.remove();
         delete binder;
       }
@@ -274,7 +274,7 @@ function _MOUSEMOVE(event) {
       binder.id = ROOM.indexOf(roomTarget);
     }
     else {
-      if (typeof(binder) != 'undefined') {
+      if (typeof(binder) != 'undefined' && binder.id == 'roomSelected') {
         binder.remove();
         delete binder;
       }
@@ -755,10 +755,6 @@ function _MOUSEMOVE(event) {
         binder.graph[0].children[0].setAttribute("x2",intersection2.x);
         binder.graph[0].children[0].setAttribute("y1",intersection1.y);
         binder.graph[0].children[0].setAttribute("y2",intersection2.y);
-        binder.graph[0].children[1].setAttribute("cx",intersection1.x);
-        binder.graph[0].children[1].setAttribute("cy",intersection1.y);
-        binder.graph[0].children[2].setAttribute("cx",intersection2.x);
-        binder.graph[0].children[2].setAttribute("cy",intersection2.y);
         
         // THE EQ FOLLOWED BY eq (PARENT EQ1 --- CHILD EQ3)
         if (equation1.follow != undefined) {
@@ -1010,8 +1006,12 @@ function _MOUSEMOVE(event) {
             binder.graph.get(0).firstChild.setAttribute("class","circle_css_2");
             binder.type = "obj";
             binder.obj = objTarget;
-          }
-          else {
+          } else if (Array.from(binder.graph.children()).some(x => x == event.target)) {
+            cursor('move');
+            Array.from(binder.graph.children()).find(x => x == event.target).setAttribute("class","circle_css_2");
+            binder.type = "obj";
+            binder.obj = objTarget;
+          } else {
             cursor('default');
             binder.graph.get(0).firstChild.setAttribute("class","circle_css_1");
             binder.type = false;
@@ -1028,39 +1028,77 @@ function _MOUSEMOVE(event) {
         rib();
         
       }
+
+      var roomTarget;
+      if (roomTarget = editor.rayCastingRoom(snap)) {
+        if (typeof(binder) != 'undefined' && binder.id == 'roomSelected') {
+          binder.remove();
+          delete binder;
+        }
+        
+        var pathSurface = roomTarget.coords;
+        var pathCreate = "M"+pathSurface[0].x+","+pathSurface[0].y;
+        for (var p = 1; p < pathSurface.length-1; p++) {
+          pathCreate = pathCreate + " "+"L"+pathSurface[p].x+","+pathSurface[p].y;
+        }
+        pathCreate = pathCreate + "Z";
+        
+        if (roomTarget.inside.length > 0) {
+          for (var ins = 0; ins < roomTarget.inside.length; ins++) {
+            pathCreate = pathCreate+" M"+Rooms.polygons[roomTarget.inside[ins]].coords[Rooms.polygons[roomTarget.inside[ins]].coords.length-1].x+","+Rooms.polygons[roomTarget.inside[ins]].coords[Rooms.polygons[roomTarget.inside[ins]].coords.length-1].y;
+            for (var free = Rooms.polygons[roomTarget.inside[ins]].coords.length-2; free > -1; free--) {
+              pathCreate = pathCreate+" L"+Rooms.polygons[roomTarget.inside[ins]].coords[free].x+","+Rooms.polygons[roomTarget.inside[ins]].coords[free].y;
+            }
+          }
+        }
+        
+        binder = qSVG.create('boxbind', 'path', {
+          id: 'roomSelected',
+          d: pathCreate,
+          fill: '#c9c14c',
+          'fill-opacity': 0.5,
+          stroke: '#c9c14c',
+          'fill-rule': 'evenodd',
+          'stroke-width': 3,
+          'class': 'room-' + roomTarget.roomId
+        });
+        binder.type = 'room';
+        binder.area = roomTarget.area;
+        binder.id = ROOM.indexOf(roomTarget);
+      }
     }
     
     // BIND CIRCLE IF nearNode and GROUP ALL SAME XY SEG POINTS
-    if (wallNode = editor.nearWallNode(snap, 20)) {
-      if (typeof(binder) == 'undefined' || binder.type == 'segment') {
-        binder = qSVG.create('boxbind', 'circle', {
-          id: "circlebinder",
-          class: "circle_css_2",
-          cx: wallNode.x,
-          cy: wallNode.y,
-          r: Rcirclebinder
-        });
-        binder.data = wallNode;
-        binder.type = "node";
-        if ($('#linebinder').length) $('#linebinder').remove();
-      } else {
-        // REMAKE CIRCLE_CSS ON BINDER AND TAKE DATA SEG GROUP
-        // if (typeof(binder) != 'undefined') {
-        //     binder.attr({
-        //         class: "circle_css_2"
-        //     });
-        // }
-      }
-      cursor('move');
-    } else {
-      if (typeof(binder) != "undefined" && binder.type == 'node') {
-        binder.remove();
-        delete binder;
-        hideAllSize();
-        cursor('default');
-        rib();
-      }
-    }
+    // if (wallNode = editor.nearWallNode(snap, 20)) {
+    //   if (typeof(binder) == 'undefined' || binder.type == 'segment') {
+    //     binder = qSVG.create('boxbind', 'circle', {
+    //       id: "circlebinder",
+    //       class: "circle_css_2",
+    //       cx: wallNode.x,
+    //       cy: wallNode.y,
+    //       r: Rcirclebinder
+    //     });
+    //     binder.data = wallNode;
+    //     binder.type = "node";
+    //     if ($('#linebinder').length) $('#linebinder').remove();
+    //   } else {
+    //     // REMAKE CIRCLE_CSS ON BINDER AND TAKE DATA SEG GROUP
+    //     // if (typeof(binder) != 'undefined') {
+    //     //     binder.attr({
+    //     //         class: "circle_css_2"
+    //     //     });
+    //     // }
+    //   }
+    //   cursor('move');
+    // } else {
+    //   if (typeof(binder) != "undefined" && binder.type == 'node') {
+    //     binder.remove();
+    //     delete binder;
+    //     hideAllSize();
+    //     cursor('default');
+    //     rib();
+    //   }
+    // }
     
     
     // BIND WALL WITH NEARPOINT function ---> WALL BINDER CREATION
@@ -1075,22 +1113,10 @@ function _MOUSEMOVE(event) {
         var line = qSVG.create('none', 'line', {
           x1: binder.wall.start.x, y1: binder.wall.start.y, x2: binder.wall.end.x, y2: binder.wall.end.y,
           "stroke-width": 5,
-          stroke: "#5cba79"
-        });
-        var ball1 = qSVG.create('none', 'circle', {
-          class: "circle_css",
-          cx: binder.wall.start.x, cy: binder.wall.start.y,
-          r: Rcirclebinder/1.8
-        });
-        var ball2 = qSVG.create('none', 'circle', {
-          class: "circle_css",
-          cx: binder.wall.end.x, cy: binder.wall.end.y,
-          r: Rcirclebinder/1.8
+          stroke: "#f3a100"
         });
         binder.graph = qSVG.create('none', 'g');
         binder.graph.append(line);
-        binder.graph.append(ball1);
-        binder.graph.append(ball2);
         $('#boxbind').append(binder.graph);
         binder.type = "segment";
         cursor('pointer');
@@ -1199,7 +1225,7 @@ function _MOUSEMOVE(event) {
     // **********************   SELECT MODE + BIND   *********************
     // *******************************************************************
     if (mode == 'select_mode') {
-      if (typeof(binder) != 'undefined' && (binder.type == 'segment' || binder.type == 'node' || binder.type == 'obj' || binder.type == 'boundingBox')) {
+      if (typeof(binder) != 'undefined' && (binder.type == 'segment' || binder.type == 'node' || binder.type == 'obj' || binder.type == 'boundingBox' || binder.type == 'room')) {
         mode = 'bind_mode';
         
         if (binder.type == 'obj') {
@@ -1546,37 +1572,41 @@ function _MOUSEMOVE(event) {
       // **************************   ROOM MODE   **************************
       // *******************************************************************
       
-      if (mode == 'room_mode') {
+      if (mode == 'bind_mode') {
         
         if (typeof(binder) == "undefined") {
           return false;
         }
         
-        var area = binder.area / 3600;
-        binder.attr({'fill': 'none', 'stroke':'#ddf00a', 'stroke-width' : 7});
-        $('.size').html(area.toFixed(2)+" m²");
-        $('#roomIndex').val(binder.id);
-        if (ROOM[binder.id].surface != '') $('#roomSurface').val(ROOM[binder.id].surface);
-        else $('#roomSurface').val('');
-        document.querySelector('#seeArea').checked = ROOM[binder.id].showSurface;
-        document.querySelector('#roomBackground').value = ROOM[binder.id].color;
-        var roomName = ROOM[binder.id].name;
-        document.querySelector('#roomName').value = roomName;
-        if (ROOM[binder.id].name != '') {
-          document.querySelector('#roomLabel').innerHTML = roomName+' <span class="caret"></span>';}
+        if (binder.type == 'room') {
+          var area = binder.area / 3600;
+          binder.attr({'fill': 'none', 'stroke':'#ddf00a', 'stroke-width' : 7});
+          $('.size').html(area.toFixed(2)+" m²");
+          $('#roomIndex').val(binder.id);
+          if (ROOM[binder.id].surface != '') $('#roomSurface').val(ROOM[binder.id].surface);
+          else $('#roomSurface').val('');
+          document.querySelector('#seeArea').checked = ROOM[binder.id].showSurface;
+          document.querySelector('#roomBackground').value = ROOM[binder.id].color;
+          var roomName = ROOM[binder.id].name;
+          document.querySelector('#roomName').value = roomName;
+          if (ROOM[binder.id].name != '') {
+            document.querySelector('#roomLabel').innerHTML = roomName+' <span class="caret"></span>';}
           else {
-            document.querySelector('#roomLabel').innerHTML = 'None <span class="caret"></span>';}
-            
-            var actionToDo = ROOM[binder.id].action;
-            document.querySelector('#'+actionToDo+'Action').checked = true;
-            $('#panel').hide(100);
-            $('#roomTools').show('300', function() {
-              $('#lin').css('cursor', 'default');
-              $('#boxinfo').html('Config. the room');
-            });
-            mode = 'edit_room_mode';
-            save();
+            document.querySelector('#roomLabel').innerHTML = 'None <span class="caret"></span>';
           }
+          
+          var actionToDo = ROOM[binder.id].action;
+          document.querySelector('#'+actionToDo+'Action').checked = true;
+          $('#panel').hide(100);
+          $('#roomTools').show('300', function() {
+            $('#lin').css('cursor', 'default');
+            $('#boxinfo').html('Config. the room');
+          });
+          mode = 'edit_room_mode';
+          save();
+
+        }
+      }
           
           // *******************************************************************
           // **************************   NODE MODE   **************************

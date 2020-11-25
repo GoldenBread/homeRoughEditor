@@ -39,6 +39,7 @@ var factor = 1;
 var scaling = false;
 rayCastingSensibility = 50;
 var picto_size = 20;
+var picto_circle_size = 15;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
@@ -1524,7 +1525,17 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
   construc.params.rotate = false;
 
   if (classObj == 'socle') {
-    construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#5cba79", 'stroke': "#5cba79", 'strokeDashArray': ''});
+    // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#5cba79", 'stroke': "#5cba79", 'strokeDashArray': ''});
+    if (typeObj == 'fix') {
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(243, 162, 0)", style: "stroke:white;stroke-width:1.5"});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(243, 162, 0);stroke-width:10", strokeLinecap: 'round'});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/windows_picto.svg"});
+      // construc.params.resize = true;
+      // construc.params.resizeLimit.width = {min:30, max:300};
+    } else {
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(243, 162, 0);stroke-width:10", strokeLinecap: 'round'});
+    }
   }
   if (classObj == 'doorWindow') {
     if (typeObj == 'simple') {
@@ -1561,6 +1572,7 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
     }
     if (typeObj == 'fix') {
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(66, 68, 72)", style: "stroke:white;stroke-width:1.5"});
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
       construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/windows_picto.svg"});
       // construc.push({'path':"M "+(-sizeObj/2)+",-2 L "+(-sizeObj/2)+",2 L "+sizeObj/2+",2 L "+sizeObj/2+",-2 Z", 'fill': "#ccc", 'stroke': "none", 'strokeDashArray': ''});

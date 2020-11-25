@@ -703,19 +703,25 @@ var x2, y2;
 function pressDownRoom(e) {
     if (mode == 'edit_room_mode') {
         var els = document.getElementsByClassName('room-' + ROOM[binder.id].roomId);
+        x2 = e.clientX;
+        y2 = e.clientY;
         for (var i = 0; i < els.length; i++) {
             flag = true;
+            console.log(">reset");
             x1 = e.clientX;
-            x2 = e.clientX;
             y1 = e.clientY;
-            y2 = e.clientY;
             var t = els[i].getAttribute('transform');
             if (t) {
                 var parts = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(t);
                 var firstX = parts[1], firstY = parts[2];
                 console.log('firstX:' + firstX + ' firstY:' + firstY);
+    
+                x1 = e.clientX - firstX * 1;
+                y1 = e.clientY - firstY * 1;
+
                 x2 = e.clientX - firstX * 1;
                 y2 = e.clientY - firstY * 1;
+                // console.log(">" + t + "x:" + x + "y:" + movePoint.y + "|| xMove: " + movePoint.x + "   yMove: " + movePoint.y);
             }
         }
     }
@@ -730,12 +736,12 @@ function moveRoom(e) {
             for (var i = 0; i < els.length; i++) {
                 x = e.clientX;
                 y = e.clientY;
-                if ((els[i].id == 'roomSelected' || els[i].id == 'ribs-room-' + ROOM[binder.id].roomId) && els[i].getAttribute('transform')) {
+                if ((els[i].id == 'roomSelected'/* || els[i].id == 'ribs-room-' + ROOM[binder.id].roomId*/) && els[i].getAttribute('transform')) {
                     t = "translate(" + (x - x2) + "," + (y - y2) + ")";
                 } else {
                     t = "translate(" + (x - x1) + "," + (y - y1) + ")";
                 }
-                
+                // console.log(t + "x:" + x + "y:" + y + "|| xMove: " + movePoint.x + "   yMove: " + movePoint.y);
                 els[i].setAttribute('transform', t);
             }
         }
@@ -778,6 +784,8 @@ function pressUpRoom() {
                 els[i].removeAttribute('transform');
             }
         }
+
+        rib();
 
         //TODO TLE recréer la pièce
 

@@ -901,9 +901,10 @@ var qSVG = {
     return grid[bestMatrix];
   },
 
-  textOnDiv:  function(label, pos, styled, div) {
+  textOnDiv:  function(label, pos, styled, div, roomId) {
     if (typeof(pos) != 'undefined') {
       var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute("class", "room-" + roomId)
       text.setAttributeNS(null, 'x', pos.x);
       text.setAttributeNS(null, 'y', pos.y);
       text.setAttribute("style","fill:"+styled.color+";font-weight:"+styled.fontWeight+";font-size:"+styled.fontSize);
