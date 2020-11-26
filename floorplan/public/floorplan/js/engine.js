@@ -987,6 +987,16 @@ function _MOUSEMOVE(event) {
         }
       }
       else {  // DOOR, WINDOW, APERTURE.. -- OBJ WITHOUT BINDBOX (params.bindBox = False) -- !!!!
+        if (typeof(binder) != 'undefined' && binder.type == 'room') {
+          if (typeof(binder) != 'undefined') {
+            if (typeof(binder.graph) != 'undefined') binder.graph.remove();
+            else binder.remove();
+            delete binder;
+            cursor('default');
+            rib();
+            
+          }
+        }
         if (typeof(binder) == 'undefined') {
           var wallList = editor.rayCastingWall(objTarget);
           if (wallList.length > 1) wallList = wallList[0];
@@ -1008,7 +1018,7 @@ function _MOUSEMOVE(event) {
             binder.obj = objTarget;
           } else if (Array.from(binder.graph.children()).some(x => x == event.target)) {
             cursor('move');
-            Array.from(binder.graph.children()).find(x => x == event.target).setAttribute("class","circle_css_2");
+            Array.from(binder.graph.children()).find(x => x == event.target && x.tagName != 'use').setAttribute("class","circle_css_2");
             binder.type = "obj";
             binder.obj = objTarget;
           } else {
@@ -1052,14 +1062,12 @@ function _MOUSEMOVE(event) {
           }
         }
         
-        binder = qSVG.create('boxbind', 'path', {
+        binder = qSVG.create('boxbindRoom', 'path', {
           id: 'roomSelected',
           d: pathCreate,
-          fill: '#c9c14c',
-          'fill-opacity': 0.5,
-          stroke: '#c9c14c',
+          fill: '#2f3136',
+          'fill-opacity': 0.6,
           'fill-rule': 'evenodd',
-          'stroke-width': 3,
           'class': 'room-' + roomTarget.roomId
         });
         binder.type = 'room';
@@ -1580,7 +1588,7 @@ function _MOUSEMOVE(event) {
         
         if (binder.type == 'room') {
           var area = binder.area / 3600;
-          binder.attr({'fill': 'none', 'stroke':'#ddf00a', 'stroke-width' : 7});
+          binder.attr({'fill': '#2f3136', 'fill-opacity': 0.6, 'stroke':'#f3a100', 'stroke-width' : 5});
           $('.size').html(area.toFixed(2)+" m²");
           $('#roomIndex').val(binder.id);
           if (ROOM[binder.id].surface != '') $('#roomSurface').val(ROOM[binder.id].surface);

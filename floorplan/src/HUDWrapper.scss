@@ -16,9 +16,6 @@ $drawerWidth: 240px;
     }
     .menuButton {
         margin-right: 16px;
-        @media (max-width: 600px) {
-            display: none;
-        }
     }
     
     .drawerPaper {

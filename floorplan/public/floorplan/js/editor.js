@@ -613,11 +613,8 @@ var editor = {
         });
       }
       if (cc[tt].picto) {
-        blank = qSVG.create('none', 'image', {
-          x: cc[tt].x,
-          y: cc[tt].y,
-          width: cc[tt].width,
-          height: cc[tt].height,
+        blank = qSVG.create('none', 'use', {
+          fill: cc[tt].fill,
           href: cc[tt].href
         });
       }
@@ -671,7 +668,11 @@ var editor = {
       this.update = function() {
         this.width = (this.size / meter).toFixed(2);
         this.height= (this.thick / meter).toFixed(2);
-        cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
+        if (classe == 'socle' && this.obj) {
+          cc = carpentryCalc(this.class, this.obj.type, this.size, this.thick, this.value);
+        } else {
+          cc = carpentryCalc(this.class, this.type, this.size, this.thick, this.value);
+        }
         var ti = 0;
         for (var tt = 0; tt < cc.length; tt++) {
           if (cc[tt].path)  {
@@ -691,8 +692,10 @@ var editor = {
         else hingeUpdate = -1;
         this.graph.attr({"transform": "translate(" + (this.x) + "," + (this.y) + ") scale("+hingeUpdate+", 1)"});
         this.graph.children().each((index, child) => {
-          if (child.tagName != 'image') {
+          if (child.tagName != 'use') {
             child.setAttribute("transform", "rotate(" +this.angle+ ",0,0)");
+          } else {
+            child.setAttribute("transform", "rotate(0,0,0), scale(0.45), translate(-26, -26)");
           }
         });
         var bbox = this.graph.get(0).getBoundingClientRect();

@@ -339,7 +339,7 @@ background-color: #5bc0de;
 .btn:hover {background:#08d;}
   .ovv {transition:all 0.1s;}
 .circle_css {fill:#5cba79;fill-opacity:0.9;transition:all 0.4s}
-.circle_css_2 {stroke:#f3a100;stroke-width:0;fill:#f3a100;fill-opacity:0.9}
+.circle_css_2 {stroke:#f3a100;stroke-width:0;fill:#f3a100}
 @keyframes myAnim{
  0% {  stroke-width:0}
  50% {  stroke-width:8}
@@ -366,4 +366,8 @@ background: #bec7cd;
 
 .wall-to-remove {
   display: none;
+}
+
+.picto {
+  fill: "#fff";
 }

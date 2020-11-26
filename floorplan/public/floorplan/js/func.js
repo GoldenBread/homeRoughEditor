@@ -39,7 +39,7 @@ var factor = 1;
 var scaling = false;
 rayCastingSensibility = 50;
 var picto_size = 20;
-var picto_circle_size = 15;
+var picto_circle_size = 19;
 
 // **************************************************************************
 // *****************   LOAD / SAVE LOCALSTORAGE      ************************
@@ -1526,17 +1526,21 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
 
   if (classObj == 'socle') {
     // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#5cba79", 'stroke': "#5cba79", 'strokeDashArray': ''});
-    if (typeObj == 'fix') {
+    if (typeObj == 'aperture') {
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
       construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(243, 162, 0)", style: "stroke:white;stroke-width:1.5"});
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(243, 162, 0);stroke-width:10", strokeLinecap: 'round'});
-      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/windows_picto.svg"});
-      // construc.params.resize = true;
-      // construc.params.resizeLimit.width = {min:30, max:300};
+      construc.push({'picto': true, x: (-picto_size).toString(), y: (-picto_size).toString(), width: picto_size, height: picto_size, fill: 'white', href: "assets/openings_icons.svg#door-picto"});
+    }
+    else if (typeObj == 'fix') {
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(243, 162, 0)", style: "stroke:white;stroke-width:1.5"});
+      construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(243, 162, 0);stroke-width:10", strokeLinecap: 'round'});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, fill: 'white', href: "assets/openings_icons.svg#windows-picto"});
     } else {
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(243, 162, 0);stroke-width:10", strokeLinecap: 'round'});
     }
-  }
+}
   if (classObj == 'doorWindow') {
     if (typeObj == 'simple') {
       construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#ccc", 'stroke': "none", 'strokeDashArray': ''});
@@ -1562,8 +1566,9 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
       // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(255, 255, 255);stroke-width:13" stroke-linecap="round" />
       // <line x1="6.5" y1="6.5" x2="200" y2="6.5" style="stroke:rgb(66, 68, 72);stroke-width:10" stroke-linecap="round" />
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
+      construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(66, 68, 72)", style: "stroke:white;stroke-width:1.5"});
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
-      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/door_picto.svg"});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, fill: 'white', href: "assets/openings_icons.svg#door-picto"});
       // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" L "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2)+" Z", 'fill': "#ccc", 'stroke': "#494646", 'strokeDashArray': '5,5'});
       // construc.push({'path':"M "+(-sizeObj/2)+","+(-(thickObj/2))+" L "+(-sizeObj/2)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+thickObj/2+" L "+((-sizeObj/2)+5)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
       // construc.push({'path':"M "+((sizeObj/2)-5)+","+(-(thickObj/2))+" L "+((sizeObj/2)-5)+","+thickObj/2+" L "+(sizeObj/2)+","+thickObj/2+" L "+(sizeObj/2)+","+(-(thickObj/2))+" Z", 'fill': "none", 'stroke': "#494646", 'strokeDashArray': 'none'});
@@ -1574,7 +1579,7 @@ function carpentryCalc(classObj, typeObj, sizeObj, thickObj, dividerObj = 10) {
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(255, 255, 255);stroke-width:13", strokeLinecap: 'round'});
       construc.push({'circle': true, cx: 0, cy: 0, r: picto_circle_size, fill:"rgb(66, 68, 72)", style: "stroke:white;stroke-width:1.5"});
       construc.push({'line': true, x1: (-sizeObj / 2 + 6.5).toString(), y1: '0', x2: (sizeObj / 2 - 6.5).toString(), y2: '0', style: "stroke:rgb(66, 68, 72);stroke-width:10", strokeLinecap: 'round'});
-      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, href: "assets/windows_picto.svg"});
+      construc.push({'picto': true, x: (-picto_size / 2).toString(), y: (-picto_size / 2).toString(), width: picto_size, height: picto_size, fill: 'white', href: "assets/openings_icons.svg#windows-picto"});
       // construc.push({'path':"M "+(-sizeObj/2)+",-2 L "+(-sizeObj/2)+",2 L "+sizeObj/2+",2 L "+sizeObj/2+",-2 Z", 'fill': "#ccc", 'stroke': "none", 'strokeDashArray': ''});
       // construc.push({'path':"M "+(-sizeObj/2)+","+(-thickObj/2)+" L "+(-sizeObj/2)+","+thickObj/2+" M "+sizeObj/2+","+thickObj/2+" L "+sizeObj/2+","+(-thickObj/2), 'fill': "none", 'stroke': "#ccc", 'strokeDashArray': ''});
       construc.params.resize = true;

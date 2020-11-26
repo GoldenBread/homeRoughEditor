@@ -1,9 +1,12 @@
 // import './HUDWrapper.scss'
 
 import React from 'react';
+import clsx from 'clsx';
 import { Button, createStyles, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles, SwipeableDrawer, Theme } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import AppBar from '@material-ui/core/AppBar';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -12,6 +15,7 @@ import ImportExportIcon from '@material-ui/icons/ImportExport';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
@@ -22,33 +26,56 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
     },
-    drawer: {
-      [theme.breakpoints.up('sm')]: {
-        width: drawerWidth,
-        flexShrink: 0,
-      },
-    },
     appBar: {
-      [theme.breakpoints.up('sm')]: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-      },
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    appBarShift: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+      transition: theme.transitions.create(['margin', 'width'], {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
     },
     menuButton: {
       marginRight: theme.spacing(2),
-      [theme.breakpoints.up('sm')]: {
-        display: 'none',
-      },
     },
-    // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
+    hide: {
+      display: 'none',
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
     drawerPaper: {
       width: drawerWidth,
     },
+    drawerHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: theme.spacing(0, 1),
+      // necessary for content to be below app bar
+      ...theme.mixins.toolbar,
+      justifyContent: 'flex-end',
+    },
     content: {
       flexGrow: 1,
-      height: '100vh',
-      display: 'table',
+      padding: theme.spacing(3),
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: -drawerWidth,
+    },
+    contentShift: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0,
     },
     playground: {
       display: 'table-row',
@@ -62,16 +89,17 @@ export interface HUDWrapperProps {
 }
 
 const HUDWrapper = ({ children }: HUDWrapperProps) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+    setOpen(!open);
   };
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <div className={classes.drawerHeader}>
+      </div>
       <Divider />
       <List>
         <ListItem id="addRoomButton" button key={'addRoomButton'}>
@@ -96,27 +124,32 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            FloorPlan
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Button 
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+        style={{backgroundColor: "#83878f", width: "fit-content", height: "fit-content", cursor: "pointer", borderRadius: "0px 8px 8px 0px", top: 20}} 
+        onClick={handleDrawerToggle} 
+      >
+        <div>
+          <div style={{backgroundColor: "white", borderRadius: 3, width: 6, height: 35, display: "inline-block", float: "left"}}></div>
+          {open  ? <ChevronLeftIcon style={{color: "white"}} fontSize={'large'} /> : <ChevronRightIcon style={{color: "white"}} fontSize={'large'} />}
+        </div>
+      </Button>
+      <main className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}>
+        <div className={classes.playground}>
+          {children}
+        </div>
+      </main>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <SwipeableDrawer
+            className={classes.drawer}
             anchor="left"
-            open={mobileOpen}
+            variant="persistent"
+            open={open}
             onOpen={handleDrawerToggle}
             onClose={handleDrawerToggle}
             classes={{
@@ -125,10 +158,12 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}
+            style={{backgroundColor: "green"}}
           >
             {drawer}
           </SwipeableDrawer>
-            <Hidden xsDown implementation="css">
+
+            {/* <Hidden xsDown implementation="css">
             <Drawer
               classes={{
                 paper: classes.drawerPaper,
@@ -138,14 +173,8 @@ const HUDWrapper = ({ children }: HUDWrapperProps) => {
             >
               {drawer}
             </Drawer>
-        </Hidden>
+        </Hidden> */}
       </nav>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <div className={classes.playground}>
-          {children}
-        </div>
-      </main>
     </div>
   );
 };
