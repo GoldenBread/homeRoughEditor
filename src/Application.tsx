@@ -1,5 +1,5 @@
 import React from 'react';
-import FloorPlan from './FloorPlan';
+import { FloorPlan } from './FloorPlan';
 import { HUDWrapper } from './HUDWrapper';
 
 const Application: React.FunctionComponent = () => (
